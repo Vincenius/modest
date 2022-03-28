@@ -1,0 +1,22 @@
+.header {
+  background-image: url('/pattern.png');
+  background-repeat: repeat;
+}
+
+.headerContent {
+  max-width: 600px;
+  padding: 100px 20px;
+  margin: 0 auto;
+  text-align: center;
+  color: #000;
+  opacity: 0.7;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+
+@media screen and (max-width: 600px) {
+  .headerContent {
+    padding: 50px 20px;
+  }
+}

@@ -1,0 +1,123 @@
+.container {
+  max-width: 600px;
+  padding: 0 20px;
+  margin: 20px auto;
+}
+
+.postContainer {
+  display: flex;
+  padding: 50px 0;
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.profile {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.profile img {
+  border-radius: 50px;
+}
+
+/* skeleton placeholder */
+.profile > span {
+  height: 100%;
+}
+
+.post {
+  margin-left: 20px;
+  width: 100%;
+}
+
+.post time {
+  display: block;
+  margin: 0;
+  font-size: 0.8em;
+  line-height: 0.8em;
+  font-style: italic;
+}
+
+.post p {
+  margin: 0.5em 0;
+}
+
+.post video {
+  width: 100%;
+}
+
+.galleryContainer {
+  margin-top: 1em;
+}
+
+.iconButtonContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.iconButton {
+  display: inline-flex;
+  margin-top: 1em;
+  margin-right: 1em;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.iconButton:hover {
+  opacity: 0.8;
+}
+
+.iconButton svg {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.25em;
+}
+
+.commentsContainer {
+  padding-left: 2em;
+  border-left: 3px solid #f3f3f3;
+  margin-top: 1em;
+}
+
+.commentPostContainer {
+  display: flex;
+  padding: 0 0 2em;
+}
+
+.commentPostContainer > *:first-child {
+  flex-shrink: 0;
+}
+
+.commentsContainer header {
+  display: inline-flex;
+  align-items: center;
+}
+
+.commentsContainer time {
+  display: inline;
+}
+
+.commentInput {
+  width: 100%;
+  margin: 0.5em 0 !important;
+}
+
+.commentSubmit {
+  margin: 0.5em 0 !important;
+  min-width: 180px;
+  text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+  .profile {
+    width: 35px;
+    height: 35px;
+  }
+  .commentsContainer {
+    padding-left: 1em;
+  }
+  .post {
+    margin-left: 1em;
+  }
+}

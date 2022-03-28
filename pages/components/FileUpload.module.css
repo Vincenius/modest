@@ -1,0 +1,20 @@
+.previewContainer {
+  position: relative;
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.previewContainer img,
+.previewContainer video {
+  max-width: 200px;
+  margin-right: 20px;
+  object-fit: contain;
+}
+
+.previewContainer svg {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  cursor: pointer;
+}
