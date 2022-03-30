@@ -21,3 +21,9 @@ a {
 a:hover {
   color: var(--primary-color);
 }
+
+main {
+  max-width: 600px;
+  padding: 0 20px;
+  margin: 20px auto;
+}

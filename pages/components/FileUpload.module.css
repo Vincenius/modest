@@ -1,3 +1,12 @@
+.fileUpload {
+  display: none;
+}
+
+.fileUploadLabel {
+  padding: 10px;
+  cursor: pointer;
+}
+
 .previewContainer {
   position: relative;
   margin-top: 20px;

@@ -1,0 +1,79 @@
+.postContainer {
+  display: flex;
+  padding: 50px 0;
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.profile {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.profile img {
+  border-radius: 50px;
+}
+
+/* skeleton placeholder */
+.profile > span {
+  height: 100%;
+}
+
+.post {
+  margin-left: 20px;
+  width: 100%;
+}
+
+/* TODO refactor above */
+
+.fileUpload {
+  display: none;
+}
+
+.fileUploadLabel {
+  padding: 5px 0.5em;
+  cursor: pointer;
+}
+
+.previewContainer {
+  position: relative;
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.previewContainer img,
+.previewContainer video {
+  max-width: 200px;
+  margin-right: 20px;
+  object-fit: contain;
+}
+
+.previewContainer svg {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  cursor: pointer;
+}
+
+.postOptions {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5em;
+}
+
+.postOptions svg {
+  opacity: 0.6;
+}
+
+.postOptions svg:hover {
+  opacity: 0.8;
+}
+
+.emojiPickerContainer {
+  position: absolute;
+}

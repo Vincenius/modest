@@ -1,9 +1,3 @@
-.container {
-  max-width: 600px;
-  padding: 0 20px;
-  margin: 20px auto;
-}
-
 .postContainer {
   display: flex;
   padding: 50px 0;
@@ -107,6 +101,10 @@
   margin: 0.5em 0 !important;
   min-width: 180px;
   text-align: center;
+}
+
+.iconsContainer {
+  display: flex;
 }
 
 @media screen and (max-width: 600px) {

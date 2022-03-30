@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { useS3Upload } from "next-s3-upload"
 import Skeleton from '@mui/material/Skeleton'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack'
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions'
 
 import styles from './FileUpload.module.css'
 
@@ -58,42 +61,74 @@ export default function UploadFiles({ urls = [], setUrls }) {
   const { uploadToS3 } = useS3Upload()
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleFilesChange = async ({ target }) => {
+  const handleImageChange = async ({ target }) => {
     setIsLoading(true)
     const files = Array.from(target.files);
 
     // TODO map & promise all
     for (let index = 0; index < files.length; index++) {
       const file = files[index] || {};
-      if (file.type.startsWith('video')) {
-        const { url } = await uploadToS3(file)
-        console.log(url)
-        setUrls(current => [...current, { url, type: 'video' }]);
-      } else {
-        const thumbnailFile = await resizeFile({ file })
-        const mediumFile = await resizeFile({ file, width: 1600, height: 1600 })
+      const thumbnailFile = await resizeFile({ file })
+      const mediumFile = await resizeFile({ file, width: 1600, height: 1600 })
 
-        const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = await Promise.all([
-          uploadToS3(file),
-          uploadToS3(thumbnailFile),
-          uploadToS3(mediumFile),
-        ])
+      const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = await Promise.all([
+        uploadToS3(file),
+        uploadToS3(thumbnailFile),
+        uploadToS3(mediumFile),
+      ])
 
-        setUrls(current => [...current, { url, thumbnailUrl, mediumUrl, type: 'image' }]);
-      }
+      setUrls(current => [...current, { url, thumbnailUrl, mediumUrl, type: 'image' }]);
     }
 
     setIsLoading(false)
   };
 
+  const handleVideoChange = async ({ target }) => {
+    setIsLoading(true)
+    const files = Array.from(target.files);
+
+    console.log(files)
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index] || {};
+      const { url } = await uploadToS3(file)
+      console.log(url)
+      setUrls(current => [...current, { url, type: 'video' }]);
+    }
+
+    setIsLoading(false)
+  }
+
   return (
     <div>
+      <label for="photo-upload" className={styles.fileUploadLabel}>
+        <AddPhotoAlternateIcon />
+      </label>
       <input
+        className={styles.fileUpload}
+        id="photo-upload"
         type="file"
         name="file"
         multiple={true}
-        onChange={handleFilesChange}
+        onChange={handleImageChange}
+        accept="image/*"
+        disabled={urls.filter(u => u.type === 'video').length}
       />
+
+      <label for="video-upload" className={styles.fileUploadLabel}>
+        <VideoCameraBackIcon />
+      </label>
+      <input
+        className={styles.fileUpload}
+        id="video-upload"
+        type="file"
+        name="file"
+        multiple={false}
+        onChange={handleVideoChange}
+        accept="video/*"
+        disabled={urls.length}
+      />
+
+      <EmojiEmotionsIcon />
 
       <div className={styles.previewContainer}>
         {urls.map((url, index) => (

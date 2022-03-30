@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useSWRConfig } from 'swr'
 import moment from 'moment'
-import 'moment/locale/de'
 import ReactMarkdown from 'react-markdown'
 import ImageGallery from 'react-image-gallery'
 import AnimateHeight from 'react-animate-height'
@@ -19,7 +18,6 @@ import styles from './PostList.module.css'
 import FileUpload from './FileUpload'
 
 const getDateString = date => {
-  moment.locale('de')
   const aDayAgo = moment().subtract(1, 'days')
   const postDate = moment(date)
 
@@ -182,7 +180,7 @@ const PostList = ({ data, isAdmin }) => {
       .catch(err => alert('ERR', err))
   }
 
-  if (!data) return <main className={styles.container}>
+  if (!data) return <div>
     { [1, 2, 3].map(i => <div className={styles.postContainer} key={i}>
       <div className={styles.profile}>
         <Skeleton variant="circular" />
@@ -197,14 +195,14 @@ const PostList = ({ data, isAdmin }) => {
         <Skeleton variant="rectangular" height={300} />
       </div>
     </div>)}
-  </main>
+  </div>
 
-  return <main className={styles.container}>
+  return <div>
     { data.map(d => <div className={styles.postContainer} key={d.id}>
       <div className={styles.profile}>
         <Image
           src="/profile.JPG"
-          alt="Linda und Vincent"
+          alt="Modest"
           layout="fill"
         />
       </div>
@@ -331,7 +329,7 @@ const PostList = ({ data, isAdmin }) => {
         </AnimateHeight>
       </div>
     </div>) }
-  </main>
+  </div>
 }
 
 export default PostList
