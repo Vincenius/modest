@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { useSWRConfig } from 'swr'
 import moment from 'moment'
 import ReactMarkdown from 'react-markdown'
@@ -14,6 +13,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import Profile from './Profile'
 import styles from './PostList.module.css'
 import FileUpload from './FileUpload'
 
@@ -182,9 +182,7 @@ const PostList = ({ data, isAdmin }) => {
 
   if (!data) return <div>
     { [1, 2, 3].map(i => <div className={styles.postContainer} key={i}>
-      <div className={styles.profile}>
-        <Skeleton variant="circular" />
-      </div>
+      <Profile isLoading={true} />
       <div className={styles.post} key={i}>
         <time>
           <Skeleton variant="text" width={100}/>
@@ -199,18 +197,13 @@ const PostList = ({ data, isAdmin }) => {
 
   return <div>
     { data.map(d => <div className={styles.postContainer} key={d.id}>
-      <div className={styles.profile}>
-        <Image
-          src="/profile.JPG"
-          alt="Modest"
-          layout="fill"
-        />
-      </div>
+      <Profile />
       <div className={styles.post}>
         <time>
           { getDateString(d.createdAt) }
         </time>
 
+        {/* TODO reuse NewPost component for updating */}
         { d.id !== editPost.id && <ReactMarkdown>{d.content.text}</ReactMarkdown> }
         { d.id === editPost.id && <TextareaAutosize
           aria-label="empty textarea"

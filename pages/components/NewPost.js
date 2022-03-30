@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import { useSWRConfig } from 'swr'
-import Picker from 'emoji-picker-react'
+import { useS3Upload } from "next-s3-upload"
 
 import TextareaAutosize from '@mui/material/TextareaAutosize'
 import Button from '@mui/material/Button'
@@ -10,63 +10,21 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined'
 import VideoCameraBackOutlinedIcon from '@mui/icons-material/VideoCameraBackOutlined'
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined'
+import resizeImage from '../../utils/resizeImage'
+import Profile from './Profile'
 import styles from './NewPost.module.css'
 
-const resizeFile = ({ file, width = 500, height = 500 }) =>
-  new Promise((resolve, reject) => {
-    const fileType = file.type;
-    const fileName = file.name;
-    const reader = new FileReader();
 
-    reader.onloadend = function() {
-      var image = new Image();
-          image.src = reader.result;
-
-      image.onload = function() {
-        var maxWidth = width,
-            maxHeight = height,
-            imageWidth = image.width,
-            imageHeight = image.height;
-
-        if (imageWidth > imageHeight) {
-          if (imageWidth > maxWidth) {
-            imageHeight *= maxWidth / imageWidth;
-            imageWidth = maxWidth;
-          }
-        }
-        else {
-          if (imageHeight > maxHeight) {
-            imageWidth *= maxHeight / imageHeight;
-            imageHeight = maxHeight;
-          }
-        }
-
-        var canvas = document.createElement('canvas');
-        canvas.width = imageWidth;
-        canvas.height = imageHeight;
-
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(this, 0, 0, imageWidth, imageHeight);
-
-        // The resized file ready for upload
-        // const base64File = canvas.toDataURL(fileType);
-        // const finalFile = dataURItoBlob(base64File, file)
-        canvas.toBlob((blob) => {
-          let file = new File([blob], fileName, { type: fileType })
-          resolve(file)
-        }, fileType);
-      }
-    }
-
-    reader.readAsDataURL(file);
-  })
+const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
 const NewPost = () => {
   const { mutate } = useSWRConfig()
+  const { uploadToS3 } = useS3Upload()
   const [value, setValue] = useState('')
   const [urls, setUrls] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isEmojiOpen, setIsEmojiOpen] = useState(null)
+  const [cursorPos, setCursorPos] = useState(0)
 
   const handleImageChange = async ({ target }) => {
     setIsLoading(true)
@@ -75,8 +33,8 @@ const NewPost = () => {
     // TODO map & promise all
     for (let index = 0; index < files.length; index++) {
       const file = files[index] || {};
-      const thumbnailFile = await resizeFile({ file })
-      const mediumFile = await resizeFile({ file, width: 1600, height: 1600 })
+      const thumbnailFile = await resizeImage({ file })
+      const mediumFile = await resizeImage({ file, width: 1600, height: 1600 })
 
       const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = await Promise.all([
         uploadToS3(file),
@@ -122,19 +80,15 @@ const NewPost = () => {
   }
 
   const addEmoji = (event, emojiObject) => {
-    console.log(emojiObject)
-    setValue(value + emojiObject.emoji)
+    const beginValue = value.slice(0, cursorPos) || ''
+    const endValue = value.slice(cursorPos, value.length) || ''
+    const newValue = `${beginValue}${emojiObject.emoji}${endValue}`
+    setValue(newValue)
+    setIsEmojiOpen(false)
   }
 
   return <div className={styles.postContainer}>
-      <div className={styles.profile}>
-        {/* TODO profile component? */}
-        <Image
-          src="/profile.JPG"
-          alt="Modest"
-          layout="fill"
-        />
-      </div>
+      <Profile />
       <div className={styles.post}>
         <TextareaAutosize
           aria-label="empty textarea"
@@ -143,6 +97,7 @@ const NewPost = () => {
           minRows={4}
           value={value}
           onChange={e => setValue(e.target.value)}
+          onBlur={e => setCursorPos(e.target.selectionStart) }
         />
 
         {/* TODO style */}

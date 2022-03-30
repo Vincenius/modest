@@ -4,21 +4,6 @@
   border-bottom: 1px solid #f3f3f3;
 }
 
-.profile {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  flex-shrink: 0;
-}
-
-.profile img {
-  border-radius: 50px;
-}
-
-/* skeleton placeholder */
-.profile > span {
-  height: 100%;
-}
 
 .post {
   margin-left: 20px;
@@ -108,10 +93,6 @@
 }
 
 @media screen and (max-width: 600px) {
-  .profile {
-    width: 35px;
-    height: 35px;
-  }
   .commentsContainer {
     padding-left: 1em;
   }
