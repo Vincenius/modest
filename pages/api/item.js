@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import * as uuid from 'uuid';
-import dynamoDb from '../../lib/dynamo-db';
+import dynamoDb from '../../lib/dynamo-db'; // TODO refactor
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {

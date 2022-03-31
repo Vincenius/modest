@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import Skeleton from '@mui/material/Skeleton'
 import styles from './Profile.module.css'
 
 const Profile = ({ isLoading = false }) => {

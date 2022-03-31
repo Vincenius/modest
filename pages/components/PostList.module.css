@@ -71,6 +71,7 @@
 .commentsContainer header {
   display: inline-flex;
   align-items: center;
+  margin-bottom: 0.25em;
 }
 
 .commentsContainer time {

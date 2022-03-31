@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useSWRConfig } from 'swr'
-import { useS3Upload } from "next-s3-upload"
 
 import TextareaAutosize from '@mui/material/TextareaAutosize'
 import Button from '@mui/material/Button'
@@ -10,37 +9,59 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined'
 import VideoCameraBackOutlinedIcon from '@mui/icons-material/VideoCameraBackOutlined'
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined'
-import resizeImage from '../../utils/resizeImage'
+import { getResizedImage, getImageDimensions } from '../../utils/resizeImage'
 import Profile from './Profile'
 import styles from './NewPost.module.css'
-
 
 const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
 const NewPost = () => {
   const { mutate } = useSWRConfig()
-  const { uploadToS3 } = useS3Upload()
   const [value, setValue] = useState('')
   const [urls, setUrls] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isEmojiOpen, setIsEmojiOpen] = useState(null)
   const [cursorPos, setCursorPos] = useState(0)
 
+  const uploadFile = (file, type = 'image') => {
+    const formData = new FormData();
+    formData.append(type, file);
+
+    const options = {
+      method: 'POST',
+      body: formData,
+    }
+
+    return fetch('/api/upload', options)
+      .catch(err => alert('ERR', err))
+      .then(res => res.json())
+  }
+
   const handleImageChange = async ({ target }) => {
     setIsLoading(true)
     const files = Array.from(target.files);
 
-    // TODO map & promise all
+    // TODO only preview first & upload on submit
     for (let index = 0; index < files.length; index++) {
-      const file = files[index] || {};
-      const thumbnailFile = await resizeImage({ file })
-      const mediumFile = await resizeImage({ file, width: 1600, height: 1600 })
+      const file = files[index] || {}; // TODO set max size & check default size
+      const fileSize = await getImageDimensions(file)
+      const imageSize = fileSize.height > fileSize.width
+        ? fileSize.height
+        : fileSize.width
 
-      const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = await Promise.all([
-        uploadToS3(file),
-        uploadToS3(thumbnailFile),
-        uploadToS3(mediumFile),
+      const thumbnailFile = await getResizedImage({ imageSize, file, imageMaxSize: 300 })
+      const mediumFile = await getResizedImage({ imageSize, file, imageMaxSize: 980 })
+      const largeFile = await getResizedImage({ imageSize, file, imageMaxSize: 2400 })
+
+      // TODO post at once with formdata
+      const response = await Promise.all([
+        uploadFile(largeFile),
+        uploadFile(thumbnailFile),
+        uploadFile(mediumFile),
       ])
+
+      console.log(response)
+      const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = response
 
       setUrls(current => [...current, { url, thumbnailUrl, mediumUrl, type: 'image' }]);
     }
@@ -54,8 +75,7 @@ const NewPost = () => {
 
     for (let index = 0; index < files.length; index++) {
       const file = files[index] || {};
-      const { url } = await uploadToS3(file)
-      console.log(url)
+      const { url } = await uploadFile(file, 'video')
       setUrls(current => [...current, { url, type: 'video' }]);
     }
 

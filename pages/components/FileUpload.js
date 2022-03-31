@@ -8,6 +8,7 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions'
 
 import styles from './FileUpload.module.css'
 
+// TODO REFACTOR EDIT AND REMOVE FILE
 const resizeFile = ({ file, width = 500, height = 500 }) =>
   new Promise((resolve, reject) => {
     const fileType = file.type;
