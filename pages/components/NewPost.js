@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useSWRConfig } from 'swr'
 
@@ -15,13 +15,21 @@ import styles from './NewPost.module.css'
 
 const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
-const NewPost = () => {
+const NewPost = ({ data, setEditPost }) => {
+  const id = data ? data.id : 'new'
   const { mutate } = useSWRConfig()
   const [value, setValue] = useState('')
   const [urls, setUrls] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isEmojiOpen, setIsEmojiOpen] = useState(null)
   const [cursorPos, setCursorPos] = useState(0)
+
+  useEffect(() => {
+    if (data) {
+      setValue(data.content.text)
+      setUrls(data.content.files)
+    }
+  }, [])
 
   const uploadFile = (file, type = 'image') => {
     const formData = new FormData();
@@ -43,7 +51,7 @@ const NewPost = () => {
 
     // TODO only preview first & upload on submit
     for (let index = 0; index < files.length; index++) {
-      const file = files[index] || {}; // TODO set max size & check default size
+      const file = files[index] || {};
       const fileSize = await getImageDimensions(file)
       const imageSize = fileSize.height > fileSize.width
         ? fileSize.height
@@ -51,16 +59,14 @@ const NewPost = () => {
 
       const thumbnailFile = await getResizedImage({ imageSize, file, imageMaxSize: 300 })
       const mediumFile = await getResizedImage({ imageSize, file, imageMaxSize: 980 })
-      const largeFile = await getResizedImage({ imageSize, file, imageMaxSize: 2400 })
+      const largeFile = await getResizedImage({ imageSize, file, imageMaxSize: 2000 })
 
-      // TODO post at once with formdata
       const response = await Promise.all([
         uploadFile(largeFile),
         uploadFile(thumbnailFile),
         uploadFile(mediumFile),
       ])
 
-      console.log(response)
       const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = response
 
       setUrls(current => [...current, { url, thumbnailUrl, mediumUrl, type: 'image' }]);
@@ -82,7 +88,23 @@ const NewPost = () => {
     setIsLoading(false)
   }
 
+  const addEmoji = (event, emojiObject) => {
+    const beginValue = value.slice(0, cursorPos) || ''
+    const endValue = value.slice(cursorPos, value.length) || ''
+    const newValue = `${beginValue}${emojiObject.emoji}${endValue}`
+    setValue(newValue)
+    setIsEmojiOpen(false)
+  }
+
   const submit = () => {
+    if (!data) {
+      submitCreate()
+    } else {
+      submitEdit()
+    }
+  }
+
+  const submitCreate = () => {
     const options = {
       method: 'POST',
       body: JSON.stringify({
@@ -99,12 +121,26 @@ const NewPost = () => {
       .catch(err => alert('ERR', err))
   }
 
-  const addEmoji = (event, emojiObject) => {
-    const beginValue = value.slice(0, cursorPos) || ''
-    const endValue = value.slice(cursorPos, value.length) || ''
-    const newValue = `${beginValue}${emojiObject.emoji}${endValue}`
-    setValue(newValue)
-    setIsEmojiOpen(false)
+  const submitEdit = () => {
+    const options = {
+      method: 'PUT',
+      body: JSON.stringify({
+        ...data,
+        content: {
+          ...data.content,
+          text: value,
+          files: urls,
+        }
+      }),
+      headers: {
+          'Content-Type': 'application/json'
+      }
+    }
+
+    fetch('/api/item', options)
+      .then(() => mutate('/api/item'))
+      .then(() => setEditPost({}))
+      .catch(err => alert('ERR', err))
   }
 
   return <div className={styles.postContainer}>
@@ -120,7 +156,6 @@ const NewPost = () => {
           onBlur={e => setCursorPos(e.target.selectionStart) }
         />
 
-        {/* TODO style */}
         { urls.length > 0 && <div className={styles.previewContainer}>
           {urls.map((url, index) => (
             <div key={url.url}>
@@ -135,26 +170,27 @@ const NewPost = () => {
 
         <div className={styles.postOptions}>
           <div>
-            <label for="photo-upload" className={styles.fileUploadLabel}>
+            <label for={`photo-upload-${id}`} className={styles.fileUploadLabel}>
               <PhotoCameraOutlinedIcon />
             </label>
             <input
               className={styles.fileUpload}
-              id="photo-upload"
+              id={`photo-upload-${id}`}
               type="file"
               name="file"
               multiple={true}
               onChange={handleImageChange}
               accept="image/*"
               disabled={urls.filter(u => u.type === 'video').length}
+              onClick={() => console.log('test', data)}
             />
 
-            <label for="video-upload" className={styles.fileUploadLabel}>
+            <label for={`video-upload-${id}`} className={styles.fileUploadLabel}>
               <VideoCameraBackOutlinedIcon />
             </label>
             <input
               className={styles.fileUpload}
-              id="video-upload"
+              id={`video-upload-${id}`}
               type="file"
               name="file"
               multiple={false}

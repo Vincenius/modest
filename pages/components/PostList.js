@@ -6,7 +6,6 @@ import ImageGallery from 'react-image-gallery'
 import AnimateHeight from 'react-animate-height'
 import Avvvatars from 'avvvatars-react'
 import TextField from '@mui/material/TextField'
-import TextareaAutosize from '@mui/material/TextareaAutosize'
 import Skeleton from '@mui/material/Skeleton'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -14,8 +13,8 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import Profile from './Profile'
+import NewPost from './NewPost'
 import styles from './PostList.module.css'
-import FileUpload from './FileUpload'
 
 const getDateString = date => {
   const aDayAgo = moment().subtract(1, 'days')
@@ -45,36 +44,6 @@ const PostList = ({ data, isAdmin }) => {
 
     fetch('/api/item', options)
       .then(() => mutate('/api/item'))
-      .catch(err => alert('ERR', err))
-  }
-
-  const updateEditPost = (field, value) => {
-    setEditPost({
-      ...editPost,
-      content: {
-        ...editPost.content,
-        [field]: value,
-      }
-    })
-  }
-
-  const updateFiles = getNewFiles => {
-    const newFiles = getNewFiles(editPost.content.files || [])
-    updateEditPost('files', newFiles)
-  }
-
-  const submitEdit = () => {
-    const options = {
-      method: 'PUT',
-      body: JSON.stringify(editPost),
-      headers: {
-          'Content-Type': 'application/json'
-      }
-    }
-
-    fetch('/api/item', options)
-      .then(() => mutate('/api/item'))
-      .then(() => setEditPost({}))
       .catch(err => alert('ERR', err))
   }
 
@@ -197,24 +166,16 @@ const PostList = ({ data, isAdmin }) => {
 
   return <div>
     { data.map(d => <div className={styles.postContainer} key={d.id}>
-      <Profile />
-      <div className={styles.post}>
+      { d.id === editPost.id && <NewPost data={editPost} setEditPost={setEditPost} /> }
+      { d.id !== editPost.id && <Profile /> }
+      { d.id !== editPost.id && <div className={styles.post}>
         <time>
           { getDateString(d.createdAt) }
         </time>
 
-        {/* TODO reuse NewPost component for updating */}
-        { d.id !== editPost.id && <ReactMarkdown>{d.content.text}</ReactMarkdown> }
-        { d.id === editPost.id && <TextareaAutosize
-          aria-label="empty textarea"
-          placeholder="Empty"
-          style={{ width: 300 }}
-          minRows={3}
-          value={editPost.content.text}
-          onChange={e => updateEditPost('text', e.target.value)}
-        /> }
+        <ReactMarkdown>{d.content.text}</ReactMarkdown>
 
-        { d.content.files && d.content.files.filter(i => i.type !== 'video').length > 0 && d.id !== editPost.id &&
+        { d.content.files && d.content.files.filter(i => i.type !== 'video').length > 0 &&
           <div className={styles.galleryContainer}>
             <ImageGallery
               showThumbnails={d.content.files.length > 1}
@@ -235,15 +196,6 @@ const PostList = ({ data, isAdmin }) => {
             </video>)}
           </div>
         }
-
-        { d.id === editPost.id && <FileUpload
-          urls={editPost.content.files || []}
-          setUrls={updateFiles}
-          /> }
-
-        { d.id === editPost.id && <div>
-          <Button variant="contained" onClick={submitEdit}>Submit</Button>
-        </div> }
 
         <div className={styles.iconButtonContainer}>
           <span
@@ -320,7 +272,7 @@ const PostList = ({ data, isAdmin }) => {
             </Button>
           </div>
         </AnimateHeight>
-      </div>
+      </div> }
     </div>) }
   </div>
 }

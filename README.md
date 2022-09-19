@@ -43,3 +43,9 @@ $ curl -X DELETE http://localhost:3000/api/item\?id\=bdc38386-2b35-47a3-bdfc-8ee
 - `cdk deploy` – Deploy this stack to your default AWS account/region
 - `cdk diff` – Compare deployed stack with current state
 - `cdk synth` – Emits the synthesized CloudFormation template
+
+## todos
+
+- refactor comments
+- add "load more"
+- write README
