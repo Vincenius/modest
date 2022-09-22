@@ -1,22 +1,23 @@
-import useSWR from 'swr'
+import React, { useState } from 'react'
 import Head from 'next/head'
 import { useSession } from 'next-auth/react'
+import Button from '@mui/material/Button'
 import PostList from './components/PostList'
 import Header from './components/Header'
 import NewPost from './components/NewPost'
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
-
 // Learn more about using SWR to fetch data from
 // your API routes -> https://swr.vercel.app/
 export default function App() {
-  const { data: session } = useSession()
-  const { data, error } = useSWR(
-    '/api/item',
-    fetcher
-  );
+  const [rangeKeys, setRangeKeys] = useState([null])
+  const [lastRangeKey, setLastRangeKey] = useState(null)
 
-  if (error) return 'An error has occurred.';
+  const fetchMore = () => {
+    setLastRangeKey(null)
+    setRangeKeys([...rangeKeys, lastRangeKey])
+  }
+
+  const { data: session } = useSession()
 
   return <div>
     <Head>
@@ -28,7 +29,24 @@ export default function App() {
 
     <main>
       { session && <NewPost /> }
-      <PostList data={data} isAdmin={!!session} />
+
+      { rangeKeys.map(lastItemRangeKey =>
+        <div key={lastItemRangeKey}>
+          <PostList
+            isAdmin={!!session}
+            range={lastItemRangeKey}
+            setLastRangeKey={setLastRangeKey}
+          />
+        </div>
+      )}
+
+      { lastRangeKey && <Button
+        variant="contained"
+        onClick={fetchMore}
+        style={{ margin: '40px auto', display: 'block' }}
+      >
+        Mehr Laden!
+      </Button> }
     </main>
   </div>
 }

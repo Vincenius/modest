@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useSWRConfig } from 'swr'
+import ImageGallery from 'react-image-gallery'
 
 import TextareaAutosize from '@mui/material/TextareaAutosize'
 import Button from '@mui/material/Button'
@@ -157,15 +158,27 @@ const NewPost = ({ data, setEditPost }) => {
         />
 
         { urls.length > 0 && <div className={styles.previewContainer}>
+          { urls[0].type === 'image' && <ImageGallery
+            showThumbnails={urls && urls.length > 1}
+            showPlayButton={false}
+            items={[...urls.filter(i => i.type !== 'video').map(i => ({
+              original: i.mediumUrl,
+              thumbnail: i.thumbnailUrl,
+              fullscreen: i.url,
+            })),
+            isLoading && {
+              original: '/loading.gif',
+              thumbnail: '/loading.gif',
+              fullscreen: '/loading.gif',
+            }].filter(Boolean)}
+          /> }
           {urls.map((url, index) => (
             <div key={url.url}>
-              { url.type !== 'video' && <img src={url.mediumUrl} />}
+              { url.type === 'video' && isLoading && <Skeleton variant="rectangular" height={200} width={200} /> }
               { url.type === 'video' && <video><source src={url.url} /></video> }
               <DeleteForeverIcon onClick={() => setUrls(current => current.filter(c => c.url !== url.url))}/>
             </div>
           ))}
-
-          { isLoading && <Skeleton variant="rectangular" height={200} width={200} /> }
         </div> }
 
         <div className={styles.postOptions}>

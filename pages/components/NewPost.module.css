@@ -20,16 +20,12 @@
 
 .previewContainer {
   position: relative;
-  margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
+  margin-top: 1em;
+  width: 100%;
 }
 
-.previewContainer img,
 .previewContainer video {
-  max-width: 200px;
-  margin-right: 20px;
-  object-fit: contain;
+  width: 100%;
 }
 
 .previewContainer svg {
