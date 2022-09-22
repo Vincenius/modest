@@ -22,6 +22,7 @@ const NewPost = ({ data, setEditPost }) => {
   const [value, setValue] = useState('')
   const [urls, setUrls] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingVideo, setIsLoadingVideo] = useState(false)
   const [isEmojiOpen, setIsEmojiOpen] = useState(null)
   const [cursorPos, setCursorPos] = useState(0)
 
@@ -77,7 +78,7 @@ const NewPost = ({ data, setEditPost }) => {
   };
 
   const handleVideoChange = async ({ target }) => {
-    setIsLoading(true)
+    setIsLoadingVideo(true)
     const files = Array.from(target.files);
 
     for (let index = 0; index < files.length; index++) {
@@ -86,7 +87,7 @@ const NewPost = ({ data, setEditPost }) => {
       setUrls(current => [...current, { url, type: 'video' }]);
     }
 
-    setIsLoading(false)
+    setIsLoadingVideo(false)
   }
 
   const addEmoji = (event, emojiObject) => {
@@ -157,6 +158,8 @@ const NewPost = ({ data, setEditPost }) => {
           onBlur={e => setCursorPos(e.target.selectionStart) }
         />
 
+        { isLoadingVideo && <Skeleton variant="rectangular" height={200} /> }
+
         { urls.length > 0 && <div className={styles.previewContainer}>
           { urls[0].type === 'image' && <ImageGallery
             showThumbnails={urls && urls.length > 1}
@@ -172,9 +175,9 @@ const NewPost = ({ data, setEditPost }) => {
               fullscreen: '/loading.gif',
             }].filter(Boolean)}
           /> }
+
           {urls.map((url, index) => (
             <div key={url.url}>
-              { url.type === 'video' && isLoading && <Skeleton variant="rectangular" height={200} width={200} /> }
               { url.type === 'video' && <video><source src={url.url} /></video> }
               <DeleteForeverIcon onClick={() => setUrls(current => current.filter(c => c.url !== url.url))}/>
             </div>

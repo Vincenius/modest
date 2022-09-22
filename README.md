@@ -50,6 +50,5 @@ http://localhost:3000/api/auth/signin
 
 - refactor comments
 - proper loading screen for uploads
-- add "load more"
 - write README
 - clean after submit
