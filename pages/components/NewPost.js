@@ -44,7 +44,7 @@ const NewPost = ({ data, setEditPost, range = null }) => {
     }
 
     return fetch('/api/upload', options)
-      .catch(err => alert('ERR', err))
+      .catch(err => alert('Unexpected error', err))
       .then(res => res.json())
   }
 
@@ -124,7 +124,7 @@ const NewPost = ({ data, setEditPost, range = null }) => {
         setValue('')
         setUrls([])
       })
-      .catch(err => alert('ERR', err))
+      .catch(err => alert('Unexpected error', err))
   }
 
   const submitEdit = () => {
@@ -146,7 +146,7 @@ const NewPost = ({ data, setEditPost, range = null }) => {
     fetch('/api/item', options)
       .then(() => mutate(`/api/item?range=${range}`))
       .then(() => setEditPost({}))
-      .catch(err => alert('ERR', err))
+      .catch(err => alert('Unexpected error', err))
   }
 
   return <div className={styles.postContainer}>

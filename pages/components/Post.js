@@ -122,7 +122,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
           },
         })
       })
-      .catch(err => alert('ERR', err))
+      .catch(err => alert('Unexpected error', err))
   }
 
   const deleteComment = comment => {
@@ -143,7 +143,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
 
     fetch('/api/item', options)
       .then(() => mutate(`/api/item?range=${range}`))
-      .catch(err => alert('ERR', err))
+      .catch(err => alert('Unexpected error', err))
   }
 
   return <div className={styles.post}>
