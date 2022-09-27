@@ -146,6 +146,10 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
       .catch(err => alert('Unexpected error', err))
   }
 
+  if (!data) {
+    return <div></div>
+  }
+
   return <div className={styles.post}>
     <time>
       { getDateString(data.createdAt) }
