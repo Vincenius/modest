@@ -41,7 +41,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
 
     fetch('/api/item', options)
       .then(() => mutate(`/api/item?range=${range}`))
-      .catch(err => console.log('ERR', err))
+      .catch(err => alert('Unexpected error', err))
   }
 
   const toggleComments = id => {

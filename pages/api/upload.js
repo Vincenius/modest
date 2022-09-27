@@ -56,8 +56,6 @@ export default async function handler(req, res) {
     const files = await parseForm(req)
     const { fileBuffer, ...fileParams } = files[0]
 
-    console.log(fileParams)
-
     s3.upload({
       ...defaultParams,
       Key: `${uuid.v4()}-${fileParams.fileName}`,
@@ -69,7 +67,7 @@ export default async function handler(req, res) {
         throw error;
         // TODO error handling
       }
-      console.log(`File was Uploaded Successfully. ${data.Location}`);
+
       res.status(201).json({ url: data.Location });
     });
   }
