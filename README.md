@@ -1,52 +1,40 @@
-# Next.js + AWS DynamoDB
+# Microblog Template
+
+This is a Next.js template for a twitter-like micro-blogging website.
+
+## Setup
+
+This template is designed to be hosted easily on Vercel and AWS.
+
+1) Go to AWS and log in or create a new account.
+
+2) Create a new IAM role with the permissions `AmazonDynamoDBFullAccess` and `AmazonS3FullAccess`
+
+3) Add the `ACCESS_KEY` and `SECRET_KEY` to the environment variables
+
+4) Add your AWS region to the env variables as ``REGION``
+
+5) Head to AWS Dynamo DB and create a new database with the Partition key `id` (String) and a Sort key `createdAt` (Number) and add the table name as environment variable `TABLE_NAME`
+
+6) Create a new S3 Bucket on AWS and [make it public](https://aws.amazon.com/premiumsupport/knowledge-center/read-access-objects-s3-bucket/).
+
+7) Add the S3 Bucket name as `S3_BUCKET` to the env variables.
+
+8) Define the variables `NEXTAUTH_URL` (your domain eg. `http://localhost:3000`for local testing) and `NEXTAUTH_SECRET` - more info about this in the [next-auth](https://next-auth.js.org/getting-started/example) library.
+
+9) Add your admin account to the env variables with `ADMIN_USERNAME=admin`
+ and `ADMIN_PASSWORD=some-password`.
+
+10) Install dependencies with `npm i` and run the app with `npm run dev`
+
+11) Use following URL to log into your admin account: [http://localhost:3000/api/auth/signin](http://localhost:3000/api/auth/signin)
 
 
-This is an example of a Next.js application using DynamoDB for creating, updating, and deleting documents.
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
 
-## Getting Started
 
-**Option 1: Use an existing table.**
+---
 
-Retrieve your existing access key, secret key, region and table name. Provide those values after clicking "Deploy" to automatically set the environment variables.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fleerob%2Fnextjs-aws-dynamodb&env=ACCESS_KEY,SECRET_KEY,REGION,TABLE_NAME&envDescription=AWS%20DynamoDB%20information%20and%20keys.)
-
-**Option 2: Create a new table.**
-
-1. Create a new [IAM role](https://aws.amazon.com/iam/) with permission for `AmazonDynamoDBFullAccess` and `AWSCloudFormationFullAccess`.
-1. Save the access key and secret key.
-1. Install the [AWS CLI](https://aws.amazon.com/cli/) and run `aws configure`.
-1. Install the AWS CDK: `npm i -g aws-cdk`.
-1. This will prompt you to enter the access key and secret key.
-1. Create an `.env.local` file similar to `.env.local.example`.
-1. Add the access key and secret key to `.env.local`.
-1. Run `cdk deploy` to create a new table `Items`.
-1. View the newly created table and copy the name to `.env.local`.
-1. Run `yarn dev` to start the Next app at `localhost:3000`.
-
-## Testing
-
-```bash
-// Create
-$ curl -X PUT http://localhost:3000/api/item -d '{"content": "test"}' -H "Content-type: application/json"
-// Read
-$ curl http://localhost:3000/api/item\?id\=bdc38386-2b35-47a3-bdfc-8ee29bd0686f
-// Update
-$ curl -X POST http://localhost:3000/api/item -d '{"content": "updated", "id": "bdc38386-2b35-47a3-bdfc-8ee29bd0686f"}' -H "Content-type: application/json"
-// Delete
-$ curl -X DELETE http://localhost:3000/api/item\?id\=bdc38386-2b35-47a3-bdfc-8ee29bd0686f
-```
-
-## Commands
-
-- `yarn dev` – Starts the Next.js app at `localhost:3000`.
-- `cdk deploy` – Deploy this stack to your default AWS account/region
-- `cdk diff` – Compare deployed stack with current state
-- `cdk synth` – Emits the synthesized CloudFormation template
-
-http://localhost:3000/api/auth/signin
-
-## todos
-
-- fix and refactor comments
-- write README
+*created by [Vincent Will](https://twitter.com/wweb_dev)*
