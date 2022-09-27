@@ -85,7 +85,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
       },
     })
 
-    const prevPost = data.find(d => d.id === id)
+    const prevPost = data
 
     const options = {
       method: 'PUT',
@@ -125,8 +125,8 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
       .catch(err => alert('ERR', err))
   }
 
-  const deleteComment = (id, comment) => {
-    const prevPost = data.find(d => d.id === id)
+  const deleteComment = comment => {
+    const prevPost = data
 
     const options = {
       method: 'PUT',
@@ -178,10 +178,10 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
     <div className={styles.iconButtonContainer}>
       <span
         className={styles.iconButton}
-        onClick={() => toggleComments(data.id)}
+        onClick={() => toggleComments(data.uid)}
       >
         <ChatBubbleOutlineIcon />
-        <i>Kommentare</i>&nbsp;[{(data.content.comments || []).length}]
+        <i>Comments</i>&nbsp;[{(data.content.comments || []).length}]
       </span>
       { isAdmin && <span>
         <span className={styles.iconButton} onClick={() => setEditPost(data)}>
@@ -195,10 +195,10 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
 
     <AnimateHeight
       duration={ 500 }
-      height={commentDetails[data.id] && commentDetails[data.id].isVisible ? 'auto' : 0}
+      height={commentDetails[data.uid] && commentDetails[data.uid].isVisible ? 'auto' : 0}
     >
       <div className={styles.commentsContainer}>
-        {(data.content.comments || []).map(c => <div className={styles.commentPostContainer} key={data.id}>
+        {(data.content.comments || []).map(c => <div className={styles.commentPostContainer} key={data.uid}>
           <Avvvatars value={c.name} style="shape" />
           <div className={styles.post}>
             <header>
@@ -211,7 +211,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
               {c.message}
             </div>
           </div>
-          { isAdmin && <span className={styles.iconButton} onClick={() => deleteComment(data.id, c)}>
+          { isAdmin && <span className={styles.iconButton} onClick={() => deleteComment(c)}>
             <DeleteForeverIcon /><i>Delete</i>
           </span> }
         </div>)}
@@ -222,31 +222,31 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
           size="small"
           className={styles.commentInput}
           required
-          value={(commentDetails[data.id] && commentDetails[data.id].name) || ''}
-          onChange={e => updateCommentDetails(data.id, e.target.value, 'name')}
+          value={(commentDetails[data.uid] && commentDetails[data.uid].name) || ''}
+          onChange={e => updateCommentDetails(data.uid, e.target.value, 'name')}
         />
         <TextField
-          label="Nachricht"
-          placeholder="Nachricht"
+          label="Message"
+          placeholder="Message"
           multiline
           rows={3}
           size="small"
           className={styles.commentInput}
           required
-          value={(commentDetails[data.id] && commentDetails[data.id].message) || ''}
-          onChange={e => updateCommentDetails(data.id, e.target.value, 'message')}
+          value={(commentDetails[data.uid] && commentDetails[data.uid].message) || ''}
+          onChange={e => updateCommentDetails(data.uid, e.target.value, 'message')}
         />
         <Button
           variant="contained"
           className={styles.commentSubmit}
           disabled={
-            !commentDetails[data.id] || !commentDetails[data.id].name ||
-            !commentDetails[data.id].message || commentDetails[data.id].isLoading
+            !commentDetails[data.uid] || !commentDetails[data.uid].name ||
+            !commentDetails[data.uid].message || commentDetails[data.uid].isLoading
           }
-          onClick={() => submitComment(data.id)}
+          onClick={() => submitComment(data.uid)}
         >
-          { commentDetails[data.id] && !commentDetails[data.id].isLoading && <span>Antworten</span> }
-          { commentDetails[data.id] && commentDetails[data.id].isLoading && <CircularProgress size={22} /> }
+          { commentDetails[data.uid] && !commentDetails[data.uid].isLoading && <span>Antworten</span> }
+          { commentDetails[data.uid] && commentDetails[data.uid].isLoading && <CircularProgress size={22} /> }
         </Button>
       </div>
     </AnimateHeight>
