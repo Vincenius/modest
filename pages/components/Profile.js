@@ -5,9 +5,9 @@ import styles from './Profile.module.css'
 
 const Profile = ({ isLoading = false }) => {
     return <div className={styles.profile}>
-      { !isLoading && <Image
+      { !isLoading && <img
         src="/profile.jpg"
-        alt="Modest"
+        alt="Profile"
         layout="fill"
       /> }
       { isLoading && <Skeleton variant="circular" /> }
