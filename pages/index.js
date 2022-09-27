@@ -21,7 +21,7 @@ export default function App() {
 
   return <div>
     <Head>
-      <title>Microblog Template</title>
+      <title>Modest Blog</title>
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       <link href="favicon.ico" rel="icon" type="image/x-icon"></link>
     </Head>

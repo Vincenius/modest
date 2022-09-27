@@ -1,4 +1,4 @@
-# Microblog Template
+# Modest Blog
 
 This is a Next.js template for a twitter-like micro-blogging website.
 
@@ -22,8 +22,7 @@ This template is designed to be hosted easily on Vercel and AWS.
 
 8) Define the variables `NEXTAUTH_URL` (your domain eg. `http://localhost:3000`for local testing) and `NEXTAUTH_SECRET` - more info about this in the [next-auth](https://next-auth.js.org/getting-started/example) library.
 
-9) Add your admin account to the env variables with `ADMIN_USERNAME=admin`
- and `ADMIN_PASSWORD=some-password`.
+9) Add your admin account to the env variables with `ADMIN_USERNAME=admin` and `ADMIN_PASSWORD=some-password`.
 
 10) Install dependencies with `npm i` and run the app with `npm run dev`
 
