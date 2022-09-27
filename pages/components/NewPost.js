@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { useSWRConfig } from 'swr'
 import ImageGallery from 'react-image-gallery'
@@ -16,7 +16,7 @@ import styles from './NewPost.module.css'
 
 const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
-const NewPost = ({ data, setEditPost }) => {
+const NewPost = ({ data, setEditPost, range = null }) => {
   const id = data ? data.id : 'new'
   const { mutate } = useSWRConfig()
   const [value, setValue] = useState('')
@@ -25,6 +25,7 @@ const NewPost = ({ data, setEditPost }) => {
   const [isLoadingVideo, setIsLoadingVideo] = useState(false)
   const [isEmojiOpen, setIsEmojiOpen] = useState(null)
   const [cursorPos, setCursorPos] = useState(0)
+  const imagePreview = useRef(null)
 
   useEffect(() => {
     if (data) {
@@ -51,7 +52,6 @@ const NewPost = ({ data, setEditPost }) => {
     setIsLoading(true)
     const files = Array.from(target.files);
 
-    // TODO only preview first & upload on submit
     for (let index = 0; index < files.length; index++) {
       const file = files[index] || {};
       const fileSize = await getImageDimensions(file)
@@ -119,7 +119,11 @@ const NewPost = ({ data, setEditPost }) => {
     }
 
     fetch('/api/item', options)
-      .then(() => mutate('/api/item'))
+      .then(() => mutate(`/api/item?range=${range}`))
+      .then(() => {
+        setValue('')
+        setUrls([])
+      })
       .catch(err => alert('ERR', err))
   }
 
@@ -140,7 +144,7 @@ const NewPost = ({ data, setEditPost }) => {
     }
 
     fetch('/api/item', options)
-      .then(() => mutate('/api/item'))
+      .then(() => mutate(`/api/item?range=${range}`))
       .then(() => setEditPost({}))
       .catch(err => alert('ERR', err))
   }
@@ -160,10 +164,11 @@ const NewPost = ({ data, setEditPost }) => {
 
         { isLoadingVideo && <Skeleton variant="rectangular" height={200} /> }
 
-        { urls.length > 0 && <div className={styles.previewContainer}>
-          { urls[0].type === 'image' && <ImageGallery
-            showThumbnails={urls && urls.length > 1}
+        { (urls.length > 0 || isLoading) && <div className={styles.previewContainer}>
+          { (isLoading || urls[0].type === 'image') && <ImageGallery
+            showThumbnails={urls && (urls.length > 1 || (urls.length === 1 && isLoading))}
             showPlayButton={false}
+            ref={imagePreview}
             items={[...urls.filter(i => i.type !== 'video').map(i => ({
               original: i.mediumUrl,
               thumbnail: i.thumbnailUrl,
@@ -179,7 +184,10 @@ const NewPost = ({ data, setEditPost }) => {
           {urls.map((url, index) => (
             <div key={url.url}>
               { url.type === 'video' && <video><source src={url.url} /></video> }
-              <DeleteForeverIcon onClick={() => setUrls(current => current.filter(c => c.url !== url.url))}/>
+              <DeleteForeverIcon onClick={() => {
+                const index = imagePreview.current.getCurrentIndex()
+                setUrls(current => current.filter((c, i) => i !== index))
+              }}/>
             </div>
           ))}
         </div> }
@@ -198,7 +206,6 @@ const NewPost = ({ data, setEditPost }) => {
               onChange={handleImageChange}
               accept="image/*"
               disabled={urls.filter(u => u.type === 'video').length}
-              onClick={() => console.log('test', data)}
             />
 
             <label for={`video-upload-${id}`} className={styles.fileUploadLabel}>

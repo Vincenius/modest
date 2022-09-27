@@ -48,7 +48,5 @@ http://localhost:3000/api/auth/signin
 
 ## todos
 
-- refactor comments
-- proper loading screen for uploads
+- fix and refactor comments
 - write README
-- clean after submit

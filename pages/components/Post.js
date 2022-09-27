@@ -23,7 +23,7 @@ const getDateString = date => {
     : postDate.format('LLL')
 }
 
-const Post = ({ data, isAdmin, setEditPost }) => {
+const Post = ({ data, isAdmin, setEditPost, range = null }) => {
   const { mutate } = useSWRConfig()
   const [commentDetails, setCommentDetails] = useState({})
 
@@ -40,8 +40,8 @@ const Post = ({ data, isAdmin, setEditPost }) => {
     }
 
     fetch('/api/item', options)
-      .then(() => mutate('/api/item'))
-      .catch(err => alert('ERR', err))
+      .then(() => mutate(`/api/item?range=${range}`))
+      .catch(err => console.log('ERR', err))
   }
 
   const toggleComments = id => {
@@ -110,7 +110,7 @@ const Post = ({ data, isAdmin, setEditPost }) => {
 
     fetch('/api/item', options)
       .then(res => res.json())
-      .then(() => mutate('/api/item'))
+      .then(() => mutate(`/api/item?range=${range}`))
       .then(() => {
         setCommentDetails({
           ...commentDetails,
@@ -142,7 +142,7 @@ const Post = ({ data, isAdmin, setEditPost }) => {
     }
 
     fetch('/api/item', options)
-      .then(() => mutate('/api/item'))
+      .then(() => mutate(`/api/item?range=${range}`))
       .catch(err => alert('ERR', err))
   }
 

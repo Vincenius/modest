@@ -43,9 +43,9 @@ const PostList = ({ range, setLastRangeKey, isAdmin }) => {
 
   return <div>
     { data.map(d => <div className={styles.postContainer} key={d.uid}>
-      { d.uid === editPost.uid && <NewPost data={editPost} setEditPost={setEditPost} /> }
+      { d.uid === editPost.uid && <NewPost data={editPost} setEditPost={setEditPost} range={range} /> }
       { d.uid !== editPost.uid && <Profile /> }
-      { d.uid !== editPost.uid && <Post data={d} isAdmin={isAdmin} setEditPost={setEditPost} /> }
+      { d.uid !== editPost.uid && <Post data={d} isAdmin={isAdmin} setEditPost={setEditPost} range={range} /> }
     </div>) }
   </div>
 }
