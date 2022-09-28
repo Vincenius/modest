@@ -5,7 +5,7 @@ import styles from './Profile.module.css'
 
 const Profile = ({ isLoading = false }) => {
     return <div className={styles.profile}>
-      { !isLoading && <img
+      { !isLoading && <Image
         src="/profile.jpg"
         alt="Profile"
         layout="fill"
