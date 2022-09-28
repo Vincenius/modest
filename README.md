@@ -2,6 +2,8 @@
 
 This is a Next.js template for a twitter-like micro-blogging website.
 
+[Demo](https://modest-blog.vercel.app/) | [Blog Post](https://wweb.dev/templates/micro-blogging-template/)
+
 ## Setup
 
 This template is designed to be hosted easily on Vercel and AWS.
