@@ -12,9 +12,3 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   overflow-x: hidden;
 }
-
-main {
-  max-width: 600px;
-  padding: 0 20px;
-  margin: 20px auto;
-}
