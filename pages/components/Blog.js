@@ -5,7 +5,7 @@ import Header from './Header'
 import NewPost from './NewPost'
 import styles from './Blog.module.css'
 
-const Blog = ({ session }) => {
+const Blog = ({ session, name, description, blogId, profileImg, headerImg }) => {
   const [rangeKeys, setRangeKeys] = useState([null])
   const [lastRangeKey, setLastRangeKey] = useState(null)
 
@@ -15,9 +15,9 @@ const Blog = ({ session }) => {
   }
 
   return <React.Fragment>
-    <Header />
+    <Header name={name} description={description} headerImg={headerImg} />
     <main className={styles.main}>
-      { session && <NewPost /> }
+      { session && <NewPost blogId={blogId} profileImg={profileImg} /> }
 
       { rangeKeys.map(lastItemRangeKey =>
         <div key={lastItemRangeKey}>
@@ -25,6 +25,8 @@ const Blog = ({ session }) => {
             isAdmin={!!session}
             range={lastItemRangeKey}
             setLastRangeKey={setLastRangeKey}
+            blogId={blogId}
+            profileImg={profileImg}
           />
         </div>
       )}

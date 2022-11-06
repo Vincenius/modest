@@ -9,9 +9,9 @@ import styles from './PostList.module.css'
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-const PostList = ({ range, setLastRangeKey, isAdmin }) => {
+const PostList = ({ range, setLastRangeKey, isAdmin, blogId, profileImg }) => {
   const [editPost, setEditPost] = useState({})
-  const itemUri = `/api/item?range=${range}`
+  const itemUri = `/api/items/${blogId}?range=${range}`
 
   const { data, error } = useSWR(
     itemUri,
@@ -22,13 +22,13 @@ const PostList = ({ range, setLastRangeKey, isAdmin }) => {
     if (data && data.length && data.length === 10) {
       setLastRangeKey(data[data.length - 1].createdAt)
     }
-  }, [data])
+  }, [data, setLastRangeKey])
 
   if (error) return 'An error has occurred.'
 
   if (!data) return <div>
     { [1, 2, 3].map(i => <div className={styles.postContainer} key={i}>
-      <Profile isLoading={true} />
+      <Profile isLoading={true} />
       <div className={styles.post} key={i}>
         <time>
           <Skeleton variant="text" width={100}/>
@@ -43,9 +43,9 @@ const PostList = ({ range, setLastRangeKey, isAdmin }) => {
 
   return <div>
     { data.map(d => <div className={styles.postContainer} key={d.uid}>
-      { d.uid === editPost.uid && <NewPost data={editPost} setEditPost={setEditPost} range={range} /> }
-      { d.uid !== editPost.uid && <Profile /> }
-      { d.uid !== editPost.uid && <Post data={d} isAdmin={isAdmin} setEditPost={setEditPost} range={range} /> }
+      { d.uid === editPost.uid && <NewPost data={editPost} setEditPost={setEditPost} range={range} blogId={blogId} /> }
+      { d.uid !== editPost.uid && <Profile profileImg={profileImg} blogId={blogId} /> }
+      { d.uid !== editPost.uid && <Post data={d} isAdmin={isAdmin} setEditPost={setEditPost} range={range} blogId={blogId} /> }
     </div>) }
   </div>
 }

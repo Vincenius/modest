@@ -16,7 +16,7 @@ import styles from './NewPost.module.css'
 
 const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
-const NewPost = ({ data, setEditPost, range = null }) => {
+const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
   const id = data ? data.id : 'new'
   const { mutate } = useSWRConfig()
   const [value, setValue] = useState('')
@@ -32,7 +32,7 @@ const NewPost = ({ data, setEditPost, range = null }) => {
       setValue(data.content.text)
       setUrls(data.content.files)
     }
-  }, [])
+  }, [data, setValue, setUrls])
 
   const uploadFile = (file, type = 'image') => {
     const formData = new FormData();
@@ -49,6 +49,7 @@ const NewPost = ({ data, setEditPost, range = null }) => {
   }
 
   const handleImageChange = async ({ target }) => {
+    // TODO only preview and upload on submit
     setIsLoading(true)
     const files = Array.from(target.files);
 
@@ -118,8 +119,8 @@ const NewPost = ({ data, setEditPost, range = null }) => {
       }
     }
 
-    fetch('/api/item', options)
-      .then(() => mutate(`/api/item?range=${range}`))
+    fetch(`/api/items/${blogId}`, options)
+      .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .then(() => {
         setValue('')
         setUrls([])
@@ -143,14 +144,14 @@ const NewPost = ({ data, setEditPost, range = null }) => {
       }
     }
 
-    fetch('/api/item', options)
-      .then(() => mutate(`/api/item?range=${range}`))
+    fetch(`/api/items/${blogId}`, options)
+      .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .then(() => setEditPost({}))
       .catch(err => alert('Unexpected error', err))
   }
 
   return <div className={styles.postContainer}>
-      <Profile />
+      <Profile profileImg={profileImg} blogId={blogId} />
       <div className={styles.post}>
         <TextareaAutosize
           aria-label="empty textarea"

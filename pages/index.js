@@ -14,6 +14,13 @@ export default function App() {
       <link href="favicon.ico" rel="icon" type="image/x-icon"></link>
     </Head>
 
-    <Blog session={session} />
+    <Blog
+      session={session}
+      blogId="blog" // used for database selector
+      name="Modest Blog"
+      description="An open-source, twitter-like micro-blogging website!"
+      headerImg="/pattern.png"
+      profileImg="/profile.JPG"
+    />
   </div>
 }

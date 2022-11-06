@@ -23,7 +23,7 @@ const getDateString = date => {
     : postDate.format('LLL')
 }
 
-const Post = ({ data, isAdmin, setEditPost, range = null }) => {
+const Post = ({ data, isAdmin, setEditPost, range = null, blogId }) => {
   const { mutate } = useSWRConfig()
   const [commentDetails, setCommentDetails] = useState({})
 
@@ -39,8 +39,8 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
       }
     }
 
-    fetch('/api/item', options)
-      .then(() => mutate(`/api/item?range=${range}`))
+    fetch(`/api/items/${blogId}`, options)
+      .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .catch(err => alert('Unexpected error', err))
   }
 
@@ -173,7 +173,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null }) => {
 
     { data.content.files && data.content.files.filter(i => i.type === 'video').length > 0 &&
       <div className={styles.galleryContainer}>
-        { data.content.files.filter(i => i.type === 'video').map(v => <video controls>
+        { data.content.files.filter(i => i.type === 'video').map(v => <video controls key={v.url}>
           <source src={v.url} />
         </video>)}
       </div>
