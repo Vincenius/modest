@@ -9,7 +9,7 @@ import styles from './PostList.module.css'
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-const PostList = ({ range, setLastRangeKey, isAdmin, blogId, profileImg }) => {
+const PostList = ({ range, setLastRangeKey, isAdmin, blogId, profileImg, useComments }) => {
   const [editPost, setEditPost] = useState({})
   const itemUri = `/api/items/${blogId}?range=${range}`
 
@@ -45,7 +45,7 @@ const PostList = ({ range, setLastRangeKey, isAdmin, blogId, profileImg }) => {
     { data.map(d => <div className={styles.postContainer} key={d.uid}>
       { d.uid === editPost.uid && <NewPost data={editPost} setEditPost={setEditPost} range={range} blogId={blogId} /> }
       { d.uid !== editPost.uid && <Profile profileImg={profileImg} blogId={blogId} /> }
-      { d.uid !== editPost.uid && <Post data={d} isAdmin={isAdmin} setEditPost={setEditPost} range={range} blogId={blogId} /> }
+      { d.uid !== editPost.uid && <Post data={d} isAdmin={isAdmin} setEditPost={setEditPost} range={range} blogId={blogId} useComments={useComments} /> }
     </div>) }
   </div>
 }

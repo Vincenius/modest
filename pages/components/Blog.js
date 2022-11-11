@@ -5,7 +5,7 @@ import Header from './Header'
 import NewPost from './NewPost'
 import styles from './Blog.module.css'
 
-const Blog = ({ session, name, description, blogId, profileImg, headerImg }) => {
+const Blog = ({ session, name, description, blogId, profileImg, headerImg, useComments }) => {
   const [rangeKeys, setRangeKeys] = useState([null])
   const [lastRangeKey, setLastRangeKey] = useState(null)
 
@@ -27,6 +27,7 @@ const Blog = ({ session, name, description, blogId, profileImg, headerImg }) => 
             setLastRangeKey={setLastRangeKey}
             blogId={blogId}
             profileImg={profileImg}
+            useComments={useComments}
           />
         </div>
       )}

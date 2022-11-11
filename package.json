@@ -31,7 +31,7 @@
     "next-s3-upload": "^0.1.9",
     "prettier": "^2.1.2",
     "react": "^17.0.1",
-    "react-animate-height": "^2.0.23",
+    "react-animate-height": "^2.1.2",
     "react-dom": "^17.0.1",
     "react-image-gallery": "^1.2.7",
     "react-markdown": "^8.0.1",

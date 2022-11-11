@@ -23,7 +23,7 @@ const getDateString = date => {
     : postDate.format('LLL')
 }
 
-const Post = ({ data, isAdmin, setEditPost, range = null, blogId }) => {
+const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments }) => {
   const { mutate } = useSWRConfig()
   const [commentDetails, setCommentDetails] = useState({})
 
@@ -180,13 +180,13 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId }) => {
     }
 
     <div className={styles.iconButtonContainer}>
-      <span
+      { useComments && <span
         className={styles.iconButton}
         onClick={() => toggleComments(data.uid)}
       >
         <ChatBubbleOutlineIcon />
         <i>Comments</i>&nbsp;[{(data.content.comments || []).length}]
-      </span>
+      </span> }
       { isAdmin && <span>
         <span className={styles.iconButton} onClick={() => setEditPost(data)}>
           <EditIcon /><i>Edit</i>
@@ -199,7 +199,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId }) => {
 
     <AnimateHeight
       duration={ 500 }
-      height={commentDetails[data.uid] && commentDetails[data.uid].isVisible ? 'auto' : 0}
+      height={(commentDetails[data.uid] && commentDetails[data.uid].isVisible) ? 'auto' : 0}
     >
       <div className={styles.commentsContainer}>
         {(data.content.comments || []).map(c => <div className={styles.commentPostContainer} key={data.uid}>

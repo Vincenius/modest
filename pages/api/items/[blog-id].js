@@ -94,6 +94,7 @@ const deleteItem = async (req, res) => {
 // HANDLER
 export default async function handler(req, res) {
   // TODO auth stuff and check if "blog-id" exists in query
+  // req.query['blog-id']
   if (req.method === 'POST') {
     await createItem(req, res)
   }

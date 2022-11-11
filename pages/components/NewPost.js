@@ -43,7 +43,7 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
       body: formData,
     }
 
-    return fetch('/api/upload', options)
+    return fetch(`/api/files/${blogId}`, options)
       .catch(err => alert('Unexpected error', err))
       .then(res => res.json())
   }
@@ -128,6 +128,19 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
       .catch(err => alert('Unexpected error', err))
   }
 
+  const deleteFile = files => {
+    const options = {
+      method: 'DELETE',
+      body: JSON.stringify({ files }),
+      headers: {
+          'Content-Type': 'application/json'
+      }
+    }
+
+    fetch(`/api/files/${blogId}`, options)
+      .catch(err => alert('Unexpected error', err))
+  }
+
   const submitEdit = () => {
     const options = {
       method: 'PUT',
@@ -187,6 +200,7 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
               { url.type === 'video' && <video><source src={url.url} /></video> }
               <DeleteForeverIcon onClick={() => {
                 const index = imagePreview.current.getCurrentIndex()
+                deleteFile(url)
                 setUrls(current => current.filter((c, i) => i !== index))
               }}/>
             </div>
