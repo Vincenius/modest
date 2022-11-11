@@ -16,7 +16,7 @@ const client = new AWS.DynamoDB.DocumentClient({
   region: process.env.REGION,
   params: {
     TableName: process.env.TABLE_NAME_FILES,
-    Limit: 500, // todo no limit???
+    Limit: 500,
   }
 });
 
