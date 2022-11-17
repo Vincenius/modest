@@ -14,7 +14,7 @@ const Blog = ({ session, name, description, blogId, profileImg, headerImg, useCo
     setRangeKeys([...rangeKeys, lastRangeKey])
   }
 
-  return <React.Fragment>
+  return <div className={styles.container}>
     <Header name={name} description={description} headerImg={headerImg} />
     <main className={styles.main}>
       { session && <NewPost blogId={blogId} profileImg={profileImg} /> }
@@ -40,7 +40,10 @@ const Blog = ({ session, name, description, blogId, profileImg, headerImg, useCo
         Mehr Laden!
       </Button> }
     </main>
-  </React.Fragment>
+    <footer className={styles.footer}>
+      created with <a href="https://modest.app">modest.app</a>
+    </footer>
+  </div>
 }
 
 export default Blog

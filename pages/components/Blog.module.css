@@ -1,5 +1,23 @@
+.container {
+  position: relative;
+  padding-bottom: 64px;
+}
+
 .main {
   max-width: 600px;
   padding: 0 20px;
   margin: 20px auto;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  padding: 10px 20px;
+  color: #757575;
+}
+
+.footer a {
+  text-decoration: underline;
 }
