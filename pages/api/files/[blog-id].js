@@ -157,9 +157,11 @@ export default async function handler(req, res) {
   } else if (req.method === 'GET') {
     // loop until no lastItemRangeKey
     const result = await getAllFiles(req,res)
-    // console.log('GET', result)
-    // TODO get all files / sizes
-    res.status(200).json(result)
+    const byteSize = result.reduce((acc, curr) => acc + (curr.size || 0), 0)
+    const mbSize = (byteSize / 1000) / 1000
+    const roundedSize = Math.round(mbSize * 10) / 10
+
+    res.status(200).json({ size: roundedSize })
   } else if (req.method === 'DELETE') {
     // console.log('DELETE', req.body)
     // TODO delete file
