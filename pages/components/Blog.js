@@ -9,6 +9,7 @@ import styles from './Blog.module.css'
 const Blog = ({ session, name, description, blogId, profileImg, headerImg, useComments }) => {
   const [rangeKeys, setRangeKeys] = useState([null])
   const [lastRangeKey, setLastRangeKey] = useState(null)
+  const title = `${name} | ${description}`
 
   const fetchMore = () => {
     setLastRangeKey(null)
@@ -17,7 +18,7 @@ const Blog = ({ session, name, description, blogId, profileImg, headerImg, useCo
 
   return <div className={styles.container}>
     <Head>
-      <title>{name} | {description}</title>
+      <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       <link rel="icon" href="/favicon.ico" />
