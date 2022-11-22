@@ -21,6 +21,7 @@ export default function App() {
       description="An open-source, twitter-like micro-blogging website!"
       headerImg="/pattern.png"
       profileImg="/profile.JPG"
+      headerColor="light" // or "dark"
       useComments={true}
     />
   </div>

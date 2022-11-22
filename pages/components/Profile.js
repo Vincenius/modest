@@ -6,10 +6,10 @@ import styles from './Profile.module.css'
 
 const Profile = ({ isLoading = false, profileImg, blogId }) => {
   return <div className={styles.profile}>
-    { !isLoading && profileImg && <Image
+    { !isLoading && profileImg && <img
       src={profileImg}
       alt="Profile"
-      layout="fill"
+      style={{ width: '100%', height: '100%' }}
     /> }
     { !isLoading && !profileImg &&
       <div className={styles.placeholder}><Avvvatars value={blogId} style="shape" size={50} /></div>

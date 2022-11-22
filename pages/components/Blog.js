@@ -6,7 +6,7 @@ import Header from './Header'
 import NewPost from './NewPost'
 import styles from './Blog.module.css'
 
-const Blog = ({ session, name, description, blogId, profileImg, headerImg, useComments }) => {
+const Blog = ({ session, name, description, blogId, profileImg, headerImg, useComments, headerColor }) => {
   const [rangeKeys, setRangeKeys] = useState([null])
   const [lastRangeKey, setLastRangeKey] = useState(null)
   const title = `${name} | ${description}`
@@ -23,7 +23,7 @@ const Blog = ({ session, name, description, blogId, profileImg, headerImg, useCo
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <Header name={name} description={description} headerImg={headerImg} />
+    <Header name={name} description={description} headerImg={headerImg} headerColor={headerColor} />
     <main className={styles.main}>
       { session && <NewPost blogId={blogId} profileImg={profileImg} /> }
 

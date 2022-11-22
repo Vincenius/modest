@@ -168,7 +168,7 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
       <div className={styles.post}>
         <TextareaAutosize
           aria-label="empty textarea"
-          placeholder="Your post"
+          placeholder="Your post written in **markdown**"
           style={{ width: '100%' }}
           minRows={4}
           value={value}
