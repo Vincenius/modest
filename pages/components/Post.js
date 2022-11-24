@@ -108,9 +108,9 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
       }
     }
 
-    fetch('/api/item', options)
+    fetch(`/api/items/${blogId}`, options)
       .then(res => res.json())
-      .then(() => mutate(`/api/item?range=${range}`))
+      .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .then(() => {
         setCommentDetails({
           ...commentDetails,
@@ -141,8 +141,8 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
       headers: { 'Content-Type': 'application/json' }
     }
 
-    fetch('/api/item', options)
-      .then(() => mutate(`/api/item?range=${range}`))
+    fetch(`/api/items/${blogId}`, options)
+      .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .catch(err => alert('Unexpected error', err))
   }
 
