@@ -19,7 +19,7 @@ export default function App() {
       blogId="blog" // used for database selector
       name="Modest Blog"
       description="An open-source, twitter-like micro-blogging website!"
-      headerImg="/pattern.png"
+      headerImg="url('/header.jpg')"
       profileImg="/profile.JPG"
       headerColor="light" // or "dark"
       useComments={true}
