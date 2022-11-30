@@ -148,24 +148,47 @@ const getAllFiles = async (req, res) => {
   return result
 }
 
+const getFile = async (req, res) => {
+  // loop until no lastItemRangeKey
+  const result = await getAllFiles(req,res)
+  const byteSize = result.reduce((acc, curr) => acc + (curr.size || 0), 0)
+  const mbSize = (byteSize / 1000) / 1000
+  const roundedSize = Math.round(mbSize * 10) / 10
+
+  res.status(200).json({ size: roundedSize })
+}
+
+const deleteFiles = async (req, res) => {
+  const urls = req.query.files.split(',')
+
+  if (urls.length) {
+    const allFiles = await getAllFiles(req,res)
+    const filesToBeDeleted = allFiles.filter(f => urls.find(u => u === f.Location))
+
+    await Promise.all(filesToBeDeleted.map(f => s3.deleteObject({
+      Bucket: process.env.S3_BUCKET,
+      Key: f.Key
+    }).promise()))
+
+    await Promise.all(filesToBeDeleted.map(f => dynamoDb.delete({
+      Key: {
+        id: f.id,
+        createdAt: f.createdAt,
+      }
+    })))
+  }
+
+  res.status(204).send()
+}
+
 // HANDLER
 export default async function handler(req, res) {
-  // req.query['blog-id']
-  // TODO auth stuff and check if "blog-id" exists in query
   if (req.method === 'POST') {
     await uploadFile(req, res)
   } else if (req.method === 'GET') {
-    // loop until no lastItemRangeKey
-    const result = await getAllFiles(req,res)
-    const byteSize = result.reduce((acc, curr) => acc + (curr.size || 0), 0)
-    const mbSize = (byteSize / 1000) / 1000
-    const roundedSize = Math.round(mbSize * 10) / 10
-
-    res.status(200).json({ size: roundedSize })
-  } else if (req.method === 'DELETE') {
-    // console.log('DELETE', req.body)
-    // TODO delete file
-    res.status(204).json()
+    await getFile(req, res)
+  } else if (req.method === 'DELETE' && req.query.files) {
+    await deleteFiles(req, res)
   } else {
     res.status(404).json()
   }

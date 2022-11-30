@@ -43,7 +43,7 @@ const PostList = ({ range, setLastRangeKey, isAdmin, blogId, profileImg, useComm
 
   return <div>
     { data.map(d => <div className={styles.postContainer} key={d.uid}>
-      { d.uid === editPost.uid && <NewPost data={editPost} setEditPost={setEditPost} range={range} blogId={blogId} /> }
+      { d.uid === editPost.uid && <NewPost data={editPost} setEditPost={setEditPost} range={range} blogId={blogId} profileImg={profileImg} /> }
       { d.uid !== editPost.uid && <Profile profileImg={profileImg} blogId={blogId} /> }
       { d.uid !== editPost.uid && <Post data={d} isAdmin={isAdmin} setEditPost={setEditPost} range={range} blogId={blogId} useComments={useComments} /> }
     </div>) }

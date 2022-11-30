@@ -27,7 +27,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
   const { mutate } = useSWRConfig()
   const [commentDetails, setCommentDetails] = useState({})
 
-  const deletePost = ({ id, createdAt }) => {
+  const deletePost = ({ id, createdAt, content }) => {
     const options = {
       method: 'DELETE',
       body: JSON.stringify({
@@ -39,9 +39,16 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
       }
     }
 
+    const files = content && content.files || []
+    const deleteUrls = files.map(f => [f.mediumUrl, f.url, f.thumbnailUrl]).flat()
+
     fetch(`/api/items/${blogId}`, options)
       .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .catch(err => alert('Unexpected error', err))
+
+    // delete files
+    fetch(`/api/files/${blogId}?files=${deleteUrls.join(',')}`, options)
+      .catch(err => console.log('Unexpected error', err))
   }
 
   const toggleComments = id => {

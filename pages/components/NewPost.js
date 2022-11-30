@@ -18,9 +18,11 @@ const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
 const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
   const id = data ? data.id : 'new'
+  const [prevFiles, setPrevFiles] = useState()
   const { mutate } = useSWRConfig()
   const [value, setValue] = useState('')
   const [urls, setUrls] = useState([])
+  const [uploadedFiles, setUploadedFiles] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingVideo, setIsLoadingVideo] = useState(false)
   const [isEmojiOpen, setIsEmojiOpen] = useState(null)
@@ -31,8 +33,14 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
     if (data) {
       setValue(data.content.text)
       setUrls(data.content.files)
+      setPrevFiles(data.content.files)
     }
   }, [data, setValue, setUrls])
+
+  // delete files on unmount
+  useEffect(() => () => {
+    handleUnusedFiles(false)
+  })
 
   const uploadFile = (file, type = 'image') => {
     const formData = new FormData();
@@ -49,7 +57,6 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
   }
 
   const handleImageChange = async ({ target }) => {
-    // TODO only preview and upload on submit
     setIsLoading(true)
     const files = Array.from(target.files);
 
@@ -73,6 +80,7 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
       const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = response
 
       setUrls(current => [...current, { url, thumbnailUrl, mediumUrl, type: 'image' }]);
+      setUploadedFiles(current => [...current, url, thumbnailUrl, mediumUrl])
     }
 
     setIsLoading(false)
@@ -86,6 +94,7 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
       const file = files[index] || {};
       const { url } = await uploadFile(file, 'video')
       setUrls(current => [...current, { url, type: 'video' }]);
+      setUploadedFiles(current => [...current, url])
     }
 
     setIsLoadingVideo(false)
@@ -125,20 +134,27 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
         setValue('')
         setUrls([])
       })
-      .catch(err => alert('Unexpected error', err))
+      .catch(err => console.log('Unexpected error', err))
   }
 
-  const deleteFile = files => {
-    const options = {
-      method: 'DELETE',
-      body: JSON.stringify({ files }),
-      headers: {
-          'Content-Type': 'application/json'
-      }
-    }
+  const handleUnusedFiles = isSubmit => {
+    const unusedPrevFiles = isSubmit
+      ? prevFiles.filter(file => !urls.find(u => u.url === file.url))
+      : [] // only delete unused uploaded if didn't submit
+    const unusedPrevUrls = unusedPrevFiles.map(f => [f.mediumUrl, f.url, f.thumbnailUrl]).flat()
+    const unusedUploadedFiles = uploadedFiles.filter(f => !urls.find(u => u.url === f))
+    const unusedUrls = [...unusedUploadedFiles, ...unusedPrevUrls]
 
-    fetch(`/api/files/${blogId}`, options)
-      .catch(err => alert('Unexpected error', err))
+    if (unusedUrls.length > 0) {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+      fetch(`/api/files/${blogId}?files=${unusedUrls.join(',')}`, options)
+        .catch(err => console.log('Unexpected error', err))
+    }
   }
 
   const submitEdit = () => {
@@ -160,7 +176,8 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
     fetch(`/api/items/${blogId}`, options)
       .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .then(() => setEditPost({}))
-      .catch(err => alert('Unexpected error', err))
+      .then(() => handleUnusedFiles(true))
+      .catch(err => console.log('Unexpected error', err))
   }
 
   return <div className={styles.postContainer}>
@@ -200,7 +217,6 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
               { url.type === 'video' && <video><source src={url.url} /></video> }
               <DeleteForeverIcon onClick={() => {
                 const index = imagePreview.current.getCurrentIndex()
-                deleteFile(url)
                 setUrls(current => current.filter((c, i) => i !== index))
               }}/>
             </div>
