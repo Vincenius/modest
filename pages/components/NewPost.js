@@ -18,11 +18,12 @@ const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
 const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
   const id = data ? data.id : 'new'
-  const [prevFiles, setPrevFiles] = useState()
+  const [prevFiles, setPrevFiles] = useState([])
   const { mutate } = useSWRConfig()
   const [value, setValue] = useState('')
   const [urls, setUrls] = useState([])
   const [uploadedFiles, setUploadedFiles] = useState([])
+  const [submittedFiles, setSubmittedFiles] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingVideo, setIsLoadingVideo] = useState(false)
   const [isEmojiOpen, setIsEmojiOpen] = useState(null)
@@ -109,6 +110,7 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
   }
 
   const submit = () => {
+    setSubmittedFiles(urls)
     if (!data) {
       submitCreate()
     } else {
@@ -134,15 +136,22 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
         setValue('')
         setUrls([])
       })
+      .then(() => handleUnusedFiles(true))
       .catch(err => console.log('Unexpected error', err))
   }
 
   const handleUnusedFiles = isSubmit => {
-    const unusedPrevFiles = isSubmit
-      ? prevFiles.filter(file => !urls.find(u => u.url === file.url))
+    const postUrls = urls.map(f => [f.mediumUrl, f.url, f.thumbnailUrl]).flat()
+    const prevUrls = prevFiles.map(f => [f.mediumUrl, f.url, f.thumbnailUrl]).flat()
+    const submittedUrls = submittedFiles.map(f => [f.mediumUrl, f.url, f.thumbnailUrl]).flat()
+
+    // files that have been deleted and submitted
+    const unusedPrevUrls = isSubmit
+      ? prevUrls.filter(file => !postUrls.find(u => u === file))
       : [] // only delete unused uploaded if didn't submit
-    const unusedPrevUrls = unusedPrevFiles.map(f => [f.mediumUrl, f.url, f.thumbnailUrl]).flat()
-    const unusedUploadedFiles = uploadedFiles.filter(f => !urls.find(u => u.url === f))
+
+    // files that have been uploaded but not used in the post
+    const unusedUploadedFiles = uploadedFiles.filter(f => !submittedUrls.find(u => u === f))
     const unusedUrls = [...unusedUploadedFiles, ...unusedPrevUrls]
 
     if (unusedUrls.length > 0) {
