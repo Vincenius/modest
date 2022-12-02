@@ -1,15 +1,36 @@
-.header {
+.headerLight, .headerDark, .header {
   background-size: cover;
   background-position: center;
+  position: relative;
+}
+
+.headerLight::after, .headerDark::after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.headerLight::after {
+  background: linear-gradient(0deg, rgb(255 255 255 / 35%), transparent);
+}
+
+.headerDark::after {
+  background: linear-gradient(0deg, rgb(0 0 0 / 35%), transparent);
 }
 
 .headerContent {
+  position: relative;
   max-width: 600px;
   padding: 100px 20px;
   margin: 0 auto;
   text-align: center;
   color: #fff;
   opacity: 1;
+  z-index: 1;
 }
 
 .headerContent h1 {

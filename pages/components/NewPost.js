@@ -10,6 +10,8 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined'
 import VideoCameraBackOutlinedIcon from '@mui/icons-material/VideoCameraBackOutlined'
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined'
+import Snackbar from '@mui/material/Snackbar'
+import MuiAlert from '@mui/material/Alert'
 import { getResizedImage, getImageDimensions } from '../../utils/resizeImage'
 import Profile from './Profile'
 import styles from './NewPost.module.css'
@@ -27,6 +29,8 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
   const [isLoadingVideo, setIsLoadingVideo] = useState(false)
   const [isEmojiOpen, setIsEmojiOpen] = useState(null)
   const [cursorPos, setCursorPos] = useState(0)
+  const [infoOpen, setInfoOpen] = useState(false)
+  const [error, setError] = useState()
   const imagePreview = useRef(null)
 
   useEffect(() => {
@@ -54,6 +58,15 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
     return fetch(`/api/files/${blogId}`, options)
       .catch(err => alert('Unexpected error', err))
       .then(res => res.json())
+      .then(res => {
+        if (res.message === 'Plan limit exceeded') {
+          setError(res.message)
+          setInfoOpen(true)
+          return 'err'
+        } else {
+          return res
+        }
+      })
   }
 
   const handleImageChange = async ({ target }) => {
@@ -77,10 +90,12 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
         uploadFile(mediumFile),
       ])
 
-      const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = response
+      if (!response.includes('err')) {
+        const [{ url }, { url: thumbnailUrl }, { url: mediumUrl }] = response
 
-      setUrls(current => [...current, { url, thumbnailUrl, mediumUrl, type: 'image' }]);
-      setUploadedFiles(current => [...current, url, thumbnailUrl, mediumUrl])
+        setUrls(current => [...current, { url, thumbnailUrl, mediumUrl, type: 'image' }]);
+        setUploadedFiles(current => [...current, url, thumbnailUrl, mediumUrl])
+      }
     }
 
     setIsLoading(false)
@@ -92,9 +107,12 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
 
     for (let index = 0; index < files.length; index++) {
       const file = files[index] || {};
-      const { url } = await uploadFile(file, 'video')
-      setUrls(current => [...current, { url, type: 'video' }]);
-      setUploadedFiles(current => [...current, url])
+      const response = await uploadFile(file, 'video')
+      if (response !== 'err') {
+        const { url } = response
+        setUrls(current => [...current, { url, type: 'video' }]);
+        setUploadedFiles(current => [...current, url])
+      }
     }
 
     setIsLoadingVideo(false)
@@ -271,6 +289,12 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
           <Button variant="contained" onClick={submit}>Submit</Button>
         </div>
       </div>
+
+      <Snackbar open={infoOpen} autoHideDuration={10000} onClose={() => setInfoOpen(false)}>
+        <MuiAlert onClose={() => setInfoOpen(false)} severity={'error'} elevation={6} sx={{ width: '100%' }}>
+          {error}
+        </MuiAlert>
+      </Snackbar>
     </div>
 }
 
