@@ -5,14 +5,15 @@ import ReactMarkdown from 'react-markdown'
 import ImageGallery from 'react-image-gallery'
 import AnimateHeight from 'react-animate-height'
 import Avvvatars from 'avvvatars-react'
-import TextField from '@mui/material/TextField'
 
+import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import styles from './PostList.module.css' // TODO MOVE
+import EmojiReaction from './EmojiReaction'
 
 const getDateString = date => {
   const aDayAgo = moment().subtract(1, 'days')
@@ -194,6 +195,9 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
         <ChatBubbleOutlineIcon />
         <i>Comments</i>&nbsp;[{(data.content.comments || []).length}]
       </span> }
+      {/* <span className={styles.iconButton}>
+        <EmojiReaction data={data} />
+      </span> */}
       { isAdmin && <span>
         <span className={styles.iconButton} onClick={() => setEditPost(data)}>
           <EditIcon /><i>Edit</i>
