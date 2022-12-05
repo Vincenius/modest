@@ -2,6 +2,9 @@ import 'dotenv/config'
 import * as uuid from 'uuid'
 import aws from 'aws-sdk'
 
+import { unstable_getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]'
+
 // DYNAMO SETUP
 const client = new aws.DynamoDB.DocumentClient({
   accessKeyId: process.env.ACCESS_KEY,
@@ -91,25 +94,36 @@ const deleteItem = async (req, res) => {
   res.status(204).json({});
 }
 
+const checkAuth = (session, id) =>
+  session && session.user && session.user.name === id
+
 // HANDLER
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    await createItem(req, res)
-  }
+  const userSession = await unstable_getServerSession(req, res, authOptions)
+  const isAuthorized = checkAuth(userSession, req.query['blog-id'])
 
-  if (req.method === 'GET' && req.query.id) {
-    await getItemById(req, res)
-  }
+  // only allow get for unuauthorized users
+  if (req.method !== 'GET' && !isAuthorized) {
+    res.status(401).json();
+  } else {
+    if (req.method === 'POST') {
+      await createItem(req, res)
+    }
 
-  if (req.method === 'GET' && !req.query.id) {
-    await getAll(req, res)
-  }
+    if (req.method === 'GET' && req.query.id) {
+      await getItemById(req, res)
+    }
 
-  if (req.method === 'PUT') {
-    await updateItem(req, res)
-  }
+    if (req.method === 'GET' && !req.query.id) {
+      await getAll(req, res)
+    }
 
-  if (req.method === 'DELETE') {
-    await deleteItem(req, res)
+    if (req.method === 'PUT') {
+      await updateItem(req, res)
+    }
+
+    if (req.method === 'DELETE') {
+      await deleteItem(req, res)
+    }
   }
 }

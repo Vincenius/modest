@@ -93,22 +93,16 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
       },
     })
 
-    const prevPost = data
+    console.log(data)
 
     const options = {
-      method: 'PUT',
+      method: 'POST',
       body: JSON.stringify({
-        ...prevPost,
-        content: {
-          ...prevPost.content,
-          comments: [
-            ...(prevPost.content.comments || []),
-            {
-              createdAt: Date.now(),
-              name: commentDetails[id].name,
-              message: commentDetails[id].message,
-            }
-          ]
+        id: data.id,
+        createdAt: data.createdAt,
+        comment: {
+          name: commentDetails[id].name,
+          message: commentDetails[id].message,
         }
       }),
       headers: {
@@ -116,7 +110,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
       }
     }
 
-    fetch(`/api/items/${blogId}`, options)
+    fetch(`/api/comments/${blogId}`, options)
       .then(res => res.json())
       .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .then(() => {

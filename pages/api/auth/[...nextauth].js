@@ -32,7 +32,10 @@ export const authOptions = {
 
         // If no error and we have user data, return it
         if (credentials.username === process.env.ADMIN_USERNAME && credentials.password === process.env.ADMIN_PASSWORD) {
-          return credentials
+          return {
+            name: 'blog', // set on <Blog/> component
+            ...credentials,
+          }
         }
         // Return null if user data could not be retrieved
         return null

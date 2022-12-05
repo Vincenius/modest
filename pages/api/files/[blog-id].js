@@ -3,6 +3,9 @@ import busboy from 'busboy'
 import AWS from 'aws-sdk'
 import 'dotenv/config'
 
+import { unstable_getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]'
+
 export const config = {
   api: {
     bodyParser: false,
@@ -181,16 +184,26 @@ const deleteFiles = async (req, res) => {
   res.status(204).send()
 }
 
+const checkAuth = (session, id) =>
+  session && session.user && session.user.name === id
+
 // HANDLER
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    await uploadFile(req, res)
-  } else if (req.method === 'GET') {
-    const roundedSize = await getFile(req, res)
-    res.status(200).json({ size: roundedSize })
-  } else if (req.method === 'DELETE' && req.query.files) {
-    await deleteFiles(req, res)
+  const userSession = await unstable_getServerSession(req, res, authOptions)
+  const isAuthorized = checkAuth(userSession, req.query['blog-id'])
+
+  if (!isAuthorized) {
+    res.status(401).json();
   } else {
-    res.status(404).json()
+    if (req.method === 'POST') {
+      await uploadFile(req, res)
+    } else if (req.method === 'GET') {
+      const roundedSize = await getFile(req, res)
+      res.status(200).json({ size: roundedSize })
+    } else if (req.method === 'DELETE' && req.query.files) {
+      await deleteFiles(req, res)
+    } else {
+      res.status(404).json()
+    }
   }
 }

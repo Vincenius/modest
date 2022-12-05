@@ -16,7 +16,7 @@ export default function App() {
 
     <Blog
       session={session}
-      blogId="blog" // used for database selector
+      blogId="blog" // used for database selector & auth
       name="Modest Blog"
       description="An open-source, twitter-like micro-blogging website!"
       headerImg="url('/header.jpg')"
