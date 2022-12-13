@@ -33,8 +33,8 @@ export default function handler(req, res) {
         style={{
           position: 'relative',
           background: image,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: hasImage ? 'cover' : '',
+          backgroundPosition: hasImage ? 'center' : 'initial',
           width: '100%',
           height: '100%',
           padding: '5em',
@@ -48,8 +48,8 @@ export default function handler(req, res) {
       >
         { hasImage && <div style={{
           background: theme === 'light'
-            ? 'linear-gradient(0deg, #000 0%, transparent 100%)'
-            : 'linear-gradient(0deg, #fff 0%, transparent 100%)',
+            ? 'linear-gradient(0deg, #000 0%, transparent 75%)'
+            : 'linear-gradient(0deg, #fff 0%, transparent 75%)',
           position: 'absolute',
           left: '0',
           top: '0',
@@ -60,7 +60,8 @@ export default function handler(req, res) {
         <h2 style={{ fontSize: 32 }}>{ description }</h2>
         <p style={{
           fontSize: 16,
-          color: 'rgba(0, 0, 0, 0.7)',
+          color: theme === 'dark' ? '#000' : '#fff',
+          opacity: 0.7,
           position: 'absolute',
           bottom: '0',
           right: '20px',
