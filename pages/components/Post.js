@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useSWRConfig } from 'swr'
 import moment from 'moment'
-import ReactMarkdown from 'react-markdown'
 import ImageGallery from 'react-image-gallery'
 import AnimateHeight from 'react-animate-height'
 import Avvvatars from 'avvvatars-react'
+import { Remark } from 'react-remark'
 
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -13,7 +13,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import styles from './PostList.module.css' // TODO MOVE
-import EmojiReaction from './EmojiReaction'
+// import EmojiReaction from './EmojiReaction'
 
 const getDateString = date => {
   const aDayAgo = moment().subtract(1, 'days')
@@ -47,9 +47,10 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
       .then(() => mutate(`/api/items/${blogId}?range=${range}`))
       .catch(err => alert('Unexpected error', err))
 
-    // delete files
-    fetch(`/api/files/${blogId}?files=${deleteUrls.join(',')}`, options)
-      .catch(err => console.log('Unexpected error', err))
+    if (deleteUrls.length) {
+      fetch(`/api/files/${blogId}?files=${deleteUrls.join(',')}`, options)
+        .catch(err => console.log('Unexpected error', err))
+    }
   }
 
   const toggleComments = id => {
@@ -92,8 +93,6 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
         isLoading: true,
       },
     })
-
-    console.log(data)
 
     const options = {
       method: 'POST',
@@ -157,7 +156,7 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
       { getDateString(data.createdAt) }
     </time>
 
-    <ReactMarkdown>{data.content.text}</ReactMarkdown>
+    <Remark disallowedElements={['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img']}>{data.content.text}</Remark>
 
     { data.content.files && data.content.files.filter(i => i.type !== 'video').length > 0 &&
       <div className={styles.galleryContainer}>
@@ -189,8 +188,8 @@ const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments })
         <ChatBubbleOutlineIcon />
         <i>Comments</i>&nbsp;[{(data.content.comments || []).length}]
       </span> }
-      {/* <span className={styles.iconButton}>
-        <EmojiReaction data={data} />
+      {/* <span className={styles.addReactionContainer}>
+        <EmojiReaction data={data} blogId={blogId} range={range} />
       </span> */}
       { isAdmin && <span>
         <span className={styles.iconButton} onClick={() => setEditPost(data)}>

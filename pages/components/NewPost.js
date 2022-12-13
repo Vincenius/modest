@@ -14,6 +14,7 @@ import Snackbar from '@mui/material/Snackbar'
 import MuiAlert from '@mui/material/Alert'
 import { getResizedImage, getImageDimensions } from '../../utils/resizeImage'
 import Profile from './Profile'
+import Richtext from './Richtext'
 import styles from './NewPost.module.css'
 
 const Picker = dynamic(() => import('emoji-picker-react'), { ssr: false })
@@ -208,14 +209,14 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
   return <div className={styles.postContainer}>
       <Profile profileImg={profileImg} blogId={blogId} />
       <div className={styles.post}>
-        <TextareaAutosize
-          aria-label="empty textarea"
-          placeholder="Your post written in **markdown**"
-          style={{ width: '100%' }}
-          minRows={4}
+        <Richtext
           value={value}
-          onChange={e => setValue(e.target.value)}
-          onBlur={e => setCursorPos(e.target.selectionStart) }
+          handleChange={val => setValue(val)}
+          // onBlur={e => {
+          //   setCursorPos(e.target.selectionStart)
+          //   console.log(e)
+          // } }
+          placeholder="Your post"
         />
 
         { isLoadingVideo && <Skeleton variant="rectangular" height={200} /> }
@@ -278,12 +279,13 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
               disabled={urls.length}
             />
 
-            <label className={styles.fileUploadLabel}>
+            {/* TODO emoji in richtext editor */}
+            {/* <label className={styles.fileUploadLabel}>
               <EmojiEmotionsOutlinedIcon onClick={() => setIsEmojiOpen(!isEmojiOpen)} />
               <div className={styles.emojiPickerContainer}>
                 { isEmojiOpen && <Picker onEmojiClick={addEmoji} /> }
               </div>
-            </label>
+            </label> */}
           </div>
 
           <Button variant="contained" onClick={submit}>Submit</Button>

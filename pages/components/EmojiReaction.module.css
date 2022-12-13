@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+}
+
+.emojiContainer {
+  margin-right: 10px;
+}
+
+.addIcon {
+  opacity: 0.6;
+}
+
+.addIcon:hover {
+  opacity: 0.8;
+}
+
+.popover {
+  border: 1px solid #757575;
+  border-radius: 5px;
+  padding: 5px;
+  background: #fff;
+  margin-top: 5px;
+}
+
+.button {
+  margin: 0 5px;
+  background: #fff;
+  border: 0;
+  outline: none;
+  border-radius: 2px;
+  font-size: 1.2em;
+  min-width: 34px;
+}
+
+.button:hover {
+  background: #bdbdbd;
+}
+
+.reaction {
+  font-size: 1.2em;
+  margin: 0 10px;
+  opacity: 1;
+}

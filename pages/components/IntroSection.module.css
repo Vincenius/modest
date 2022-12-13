@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  padding: 20px 0;
+  border-bottom: 2px solid #f3f3f3;
+}
+
+.profile {
+  width: 33%;
+  max-width: 100px;
+  min-width: 50px;
+  border-radius: 100px;
+  margin-right: 30px;
+}

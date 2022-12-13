@@ -35,26 +35,19 @@
   justify-content: space-between;
   align-items: center;
   position: relative;
-  margin-top: 0.5em;
+  margin-top: 1em;
 }
 
-.iconButton {
+.iconButton, .addReactionContainer {
   display: inline-flex;
   margin-right: 1em;
   cursor: pointer;
   opacity: 0.6;
 }
 
-.addReactionContainer button {
-  height: 36px;
-  width: 36px;
-  background: #f3f3f3;
-  color: rgba(0,0,0,.6);
-}
-
-.addReactionContainer button:hover {
-  background: #f3f3f3;
-  color: rgba(0,0,0,1);
+.addReactionContainer {
+  margin-right: 2px;
+  opacity: 1;
 }
 
 .iconButton:hover {

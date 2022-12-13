@@ -1,5 +1,5 @@
 export const getImageDimensions = file => new Promise(resolve => {
-  const dataURL = window.URL.createObjectURL(file)
+  const dataURL = window ? window.URL.createObjectURL(file) : null
   const img = new Image()
   img.onload = () => {
     resolve({

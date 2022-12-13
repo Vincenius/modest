@@ -4,12 +4,26 @@ import Button from '@mui/material/Button'
 import PostList from './PostList'
 import Header from './Header'
 import NewPost from './NewPost'
+import IntroSection from './IntroSection'
 import styles from './Blog.module.css'
 
-const Blog = ({ session, name, description, blogId, profileImg, headerImg, useComments, headerColor }) => {
+// https://nextjs.org/blog/next-13#og-image-generation
+
+const Blog = ({
+  session,
+  name,
+  description,
+  blogId,
+  profileImg,
+  headerImg,
+  useComments,
+  headerColor,
+  introText,
+}) => {
   const [rangeKeys, setRangeKeys] = useState([null])
   const [lastRangeKey, setLastRangeKey] = useState(null)
   const title = `${name} | ${description}`
+  const introIsEmpty = !introText || !introText.trim() || introText.trim() === '​'
 
   const fetchMore = () => {
     setLastRangeKey(null)
@@ -25,6 +39,7 @@ const Blog = ({ session, name, description, blogId, profileImg, headerImg, useCo
     </Head>
     <Header name={name} description={description} headerImg={headerImg} headerColor={headerColor} />
     <main className={styles.main}>
+      { !introIsEmpty && <IntroSection introText={introText} profileImg={profileImg} /> }
       { session && <NewPost blogId={blogId} profileImg={profileImg} /> }
 
       { rangeKeys.map(lastItemRangeKey =>
