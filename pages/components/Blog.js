@@ -23,7 +23,11 @@ const Blog = ({
   const [rangeKeys, setRangeKeys] = useState([null])
   const [lastRangeKey, setLastRangeKey] = useState(null)
   const title = `${name} | ${description}`
+  const isCustomHeader = headerImg.includes('https://')
   const introIsEmpty = !introText || !introText.trim() || introText.trim() === '​'
+
+  const ogImage = isCustomHeader ? `&image=${headerImg}&theme=${headerColor}` : ''
+  const ogLink = `/api/og/?title=${encodeURI(name)}&description=${encodeURI(description)}${ogImage}`
 
   const fetchMore = () => {
     setLastRangeKey(null)
@@ -35,6 +39,13 @@ const Blog = ({
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={ogLink} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={ogLink} />
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <Header name={name} description={description} headerImg={headerImg} headerColor={headerColor} />
@@ -67,6 +78,15 @@ const Blog = ({
       created with <a href="https://modest.app">modest.app</a>
     </footer>
   </div>
+}
+
+Blog.getInitialProps = async(context) => {
+  const { req } = context
+  if (req) {
+    let baseUrl = req.headers.host // will give you localhost:3000
+  }
+
+  return { baseUrl }
 }
 
 export default Blog
