@@ -27,7 +27,8 @@ const Blog = ({
   const introIsEmpty = !introText || !introText.trim() || introText.trim() === '​'
 
   const ogImage = isCustomHeader ? `&image=${headerImg}&theme=${headerColor}` : ''
-  const ogLink = `/api/og/?title=${encodeURI(name)}&description=${encodeURI(description)}${ogImage}`
+  // TODO handle base url
+  const ogLink = `https://modest.app/api/og/?title=${encodeURI(name)}&description=${encodeURI(description)}${ogImage}`
 
   const fetchMore = () => {
     setLastRangeKey(null)

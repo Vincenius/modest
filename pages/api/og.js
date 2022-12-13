@@ -19,7 +19,7 @@ export default function handler(req, res) {
     ? searchParams.get('description')?.slice(0, 200)
     : 'An open-source micro-blogging platform to create your own twitter-like blog for free.';
 
-  const image = hasImage
+  const image = hasImage // todo image for generated pattern
     ? decodeURI(searchParams.get('image'))
     : 'linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%)';
 
