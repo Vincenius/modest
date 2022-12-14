@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic'
 import { useSWRConfig } from 'swr'
 import ImageGallery from 'react-image-gallery'
 
-import TextareaAutosize from '@mui/material/TextareaAutosize'
 import Button from '@mui/material/Button'
 import Skeleton from '@mui/material/Skeleton'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
@@ -251,7 +250,7 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
 
         <div className={styles.postOptions}>
           <div>
-            <label for={`photo-upload-${id}`} className={styles.fileUploadLabel}>
+            <label htmlFor={`photo-upload-${id}`} className={styles.fileUploadLabel}>
               <PhotoCameraOutlinedIcon />
             </label>
             <input
@@ -265,7 +264,7 @@ const NewPost = ({ data, setEditPost, range = null, blogId, profileImg }) => {
               disabled={urls.filter(u => u.type === 'video').length}
             />
 
-            <label for={`video-upload-${id}`} className={styles.fileUploadLabel}>
+            <label htmlFor={`video-upload-${id}`} className={styles.fileUploadLabel}>
               <VideoCameraBackOutlinedIcon />
             </label>
             <input
