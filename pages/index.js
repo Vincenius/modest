@@ -23,6 +23,7 @@ export default function App() {
       profileImg="/profile.JPG"
       headerColor="light" // or "dark"
       useComments={true}
+      useNewsletter={false}
     />
   </div>
 }

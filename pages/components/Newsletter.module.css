@@ -1,0 +1,32 @@
+.container {
+  padding: 20px;
+  background: #f3f3f3;
+  border-radius: 4px;
+}
+
+.introText {
+  margin: 0 0 1em;
+}
+
+.form {
+  display: flex;
+}
+
+.textInput {
+  width: 100%;
+  background: #fff;
+
+}
+
+.textInput > div {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.button {
+  max-width: 150px;
+  margin: 0 !important;
+  background: #fff;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}

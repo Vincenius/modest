@@ -5,6 +5,7 @@ import PostList from './PostList'
 import Header from './Header'
 import NewPost from './NewPost'
 import IntroSection from './IntroSection'
+import Newsletter from './Newsletter'
 import styles from './Blog.module.css'
 
 // https://nextjs.org/blog/next-13#og-image-generation
@@ -17,8 +18,10 @@ const Blog = ({
   profileImg,
   headerImg,
   useComments,
+  useNewsletter,
   headerColor,
   introText,
+  // TODO store all these in state instead of passing them down?
 }) => {
   const [rangeKeys, setRangeKeys] = useState([null])
   const [lastRangeKey, setLastRangeKey] = useState(null)
@@ -52,6 +55,7 @@ const Blog = ({
     <Header name={name} description={description} headerImg={headerImg} headerColor={headerColor} />
     <main className={styles.main}>
       { !introIsEmpty && <IntroSection introText={introText} profileImg={profileImg} /> }
+      { useNewsletter && <Newsletter blogId={blogId} /> }
       { session && <NewPost blogId={blogId} profileImg={profileImg} /> }
 
       { rangeKeys.map(lastItemRangeKey =>
