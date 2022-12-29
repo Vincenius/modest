@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSWRConfig } from 'swr'
-import moment from 'moment'
 import ImageGallery from 'react-image-gallery'
 import AnimateHeight from 'react-animate-height'
 import Avvvatars from 'avvvatars-react'
@@ -13,16 +12,8 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import styles from './PostList.module.css' // TODO MOVE
+import getDateString from '../../utils/getDateString'
 // import EmojiReaction from './EmojiReaction'
-
-const getDateString = date => {
-  const aDayAgo = moment().subtract(1, 'days')
-  const postDate = moment(date)
-
-  return (aDayAgo < postDate)
-    ? postDate.fromNow()
-    : postDate.format('LLL')
-}
 
 const Post = ({ data, isAdmin, setEditPost, range = null, blogId, useComments }) => {
   const { mutate } = useSWRConfig()

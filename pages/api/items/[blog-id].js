@@ -25,6 +25,22 @@ const dynamoDb = {
   delete: (params) => client.delete(params).promise()
 };
 
+export const getItems = async (blogId, range, rangeCompare = '<') => {
+  const lastItemRangeKey = parseInt(range, 10) || 99999999999999
+  const { Items = [] } = await dynamoDb.query({
+    ScanIndexForward: false,
+    Limit: 10,
+    KeyConditionExpression: `id = :hashKey and createdAt ${rangeCompare} :rangeKey`,
+    ExpressionAttributeValues: {
+      ':hashKey': blogId,
+      ':rangeKey': lastItemRangeKey,
+    },
+  });
+  const result = Items.sort((a, b) => b.createdAt - a.createdAt)
+
+  return result
+}
+
 // ITEM HELPERS
 const createItem = async (req, res) => {
   const item = {
@@ -42,17 +58,7 @@ const createItem = async (req, res) => {
 }
 
 const getAll = async (req, res) => {
-  const lastItemRangeKey = parseInt(req.query.range, 10) || 99999999999999
-  const { Items = [] } = await dynamoDb.query({
-    ScanIndexForward: false,
-    Limit: 10,
-    KeyConditionExpression: 'id = :hashKey and createdAt < :rangeKey',
-    ExpressionAttributeValues: {
-      ':hashKey': req.query['blog-id'],
-      ':rangeKey': lastItemRangeKey,
-    },
-  });
-  const result = Items.sort((a, b) => b.createdAt - a.createdAt)
+  const result = await getItems(req.query['blog-id'], req.query.range)
 
   res.status(200).json(result);
 }

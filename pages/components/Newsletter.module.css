@@ -6,6 +6,8 @@
 
 .introText {
   margin: 0 0 1em;
+  opacity: 0.9;
+  line-height: 1.5em;
 }
 
 .form {

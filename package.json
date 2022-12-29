@@ -9,7 +9,8 @@
     "cdk": "cdk",
     "build": "next build",
     "dev": "next",
-    "start": "next start"
+    "start": "next start",
+    "mjml": "./node_modules/.bin/mjml ./lib/template.mjml"
   },
   "dependencies": {
     "@aws-cdk/aws-dynamodb": "^1.73.0",
@@ -27,9 +28,11 @@
     "emoji-picker-react": "^3.5.1",
     "eslint-config-next": "^13.0.6",
     "global": "^4.4.0",
+    "mjml": "^4.13.0",
     "moment": "^2.29.1",
     "next": "^13.0.6",
     "next-auth": "^4.18.4",
+    "node-mailjet": "^5.1.1",
     "prettier": "^2.1.2",
     "react": "^18.2.0",
     "react-animate-height": "^2.1.2",
