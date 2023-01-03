@@ -25,11 +25,11 @@ const dynamoDb = {
   delete: (params) => client.delete(params).promise()
 };
 
-export const getItems = async (blogId, range, rangeCompare = '<') => {
+export const getItems = async (blogId, range, rangeCompare = '<', limit = 10) => {
   const lastItemRangeKey = parseInt(range, 10) || 99999999999999
   const { Items = [] } = await dynamoDb.query({
     ScanIndexForward: false,
-    Limit: 10,
+    Limit: limit,
     KeyConditionExpression: `id = :hashKey and createdAt ${rangeCompare} :rangeKey`,
     ExpressionAttributeValues: {
       ':hashKey': blogId,
