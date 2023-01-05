@@ -16,7 +16,7 @@ const Blog = ({
   description,
   blogId,
   profileImg,
-  headerImg,
+  headerImg = '',
   useComments,
   useNewsletter,
   headerColor,
