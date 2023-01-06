@@ -26,7 +26,7 @@ const Blog = ({
   const [rangeKeys, setRangeKeys] = useState([null])
   const [lastRangeKey, setLastRangeKey] = useState(null)
   const title = `${name} | ${description}`
-  const isCustomHeader = headerImg.includes('https://')
+  const isCustomHeader = headerImg && headerImg.includes('https://')
   const introIsEmpty = !introText || !introText.trim() || introText.trim() === '​'
 
   const ogImage = isCustomHeader ? `&image=${headerImg}&theme=${headerColor}` : ''
